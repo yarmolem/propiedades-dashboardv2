@@ -1,0 +1,10 @@
+.desc-corta {
+  width: 90%;
+  max-width: 20rem;
+  overflow: hidden;
+}
+.desc-completa {
+  width: 90%;
+  max-width: 30rem;
+  overflow: hidden;
+}

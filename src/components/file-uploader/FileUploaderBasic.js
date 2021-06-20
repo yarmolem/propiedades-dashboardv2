@@ -21,7 +21,7 @@ const FileUploaderBasic = () => {
 
   const locale = {
     strings: {
-      dropHereOr: 'Deja caer la foto del asesor o %{browse}',
+      dropHereOr: 'Deja caer la foto aqui o %{browse}',
       browse: 'seleccionala'
     }
   }

@@ -13,8 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Third Party Components
 import Select from 'react-select'
 import ReactPaginate from 'react-paginate'
-import { ChevronDown } from 'react-feather'
-import DataTable from 'react-data-table-component'
+import { MoreVertical, Edit, Trash, Image } from 'react-feather'
 import { selectThemeColors } from '@utils'
 import {
   Card,
@@ -26,12 +25,20 @@ import {
   Col,
   Label,
   CustomInput,
-  Button
+  Button,
+  Table as TableBasic,
+  Badge,
+  UncontrolledDropdown,
+  DropdownMenu,
+  DropdownItem,
+  DropdownToggle
 } from 'reactstrap'
+import { useHistory } from 'react-router-dom'
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
+import './styles.css'
 
 // ** Table Header
 const CustomHeader = ({
@@ -41,6 +48,8 @@ const CustomHeader = ({
   handleFilter,
   searchTerm
 }) => {
+  const history = useHistory()
+
   return (
     <div className="invoice-list-table-header w-100 mr-1 ml-50 mt-2 mb-75">
       <Row>
@@ -83,7 +92,12 @@ const CustomHeader = ({
               onChange={(e) => handleFilter(e.target.value)}
             />
           </div>
-          <Button.Ripple color="primary" onClick={toggleSidebar}>
+          <Button.Ripple
+            onClick={() => history.push('/nueva-propiedad')}
+            color="primary"
+            outline
+            // onClick={toggleSidebar}
+          >
             Nueva propiedad
           </Button.Ripple>
         </Col>
@@ -210,67 +224,113 @@ const UsersList = () => {
       </Card>
 
       <Card>
-        <DataTable
-          noHeader
-          pagination
-          subHeader
-          responsive
-          paginationServer
-          columns={columns}
-          sortIcon={<ChevronDown />}
-          className="react-dataTable"
-          paginationComponent={CustomPagination}
-          data={[
-            {
-              id: 1,
-              fullName: 'Galen Slixby',
-              company: 'Yotz PVT LTD',
-              role: 'editor',
-              username: 'gslixby0',
-              country: 'El Salvador',
-              contact: '(479) 232-9151',
-              email: 'gslixby0@abc.net.au',
-              currentPlan: 'enterprise',
-              status: 'inactive',
-              avatar: ''
-            },
-            {
-              id: 2,
-              fullName: 'Halsey Redmore',
-              company: 'Skinder PVT LTD',
-              role: 'author',
-              username: 'hredmore1',
-              country: 'Albania',
-              contact: '(472) 607-9137',
-              email: 'hredmore1@imgur.com',
-              currentPlan: 'team',
-              status: 'pending',
-              avatar: require('@src/assets/images/avatars/10.png').default
-            },
-            {
-              id: 3,
-              fullName: 'Marjory Sicely',
-              company: 'Oozz PVT LTD',
-              role: 'maintainer',
-              username: 'msicely2',
-              country: 'Russia',
-              contact: '(321) 264-4599',
-              email: 'msicely2@who.int',
-              currentPlan: 'enterprise',
-              status: 'active',
-              avatar: require('@src/assets/images/avatars/1.png').default
-            }
-          ]}
-          subHeaderComponent={
-            <CustomHeader
-              handleFilter={() => {}}
-              searchTerm={searchTerm}
-              handlePerPage={() => {}}
-              rowsPerPage={rowsPerPage}
-              toggleSidebar={toggleSidebar}
-            />
-          }
-        />
+        <div className="mx-3">
+          <CustomHeader />
+        </div>
+        <TableBasic className="w-full" responsive>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Titulo</th>
+              <th>Baños</th>
+              <th>Cuartos</th>
+              <th>Pisos</th>
+              <th>Contrato</th>
+              <th>Direccion</th>
+              <th>Estado</th>
+              <th>Destacar</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array(3)
+              .fill(null)
+              .map((_, i) => (
+                <tr key={i}>
+                  <td>
+                    <span className="align-middle font-weight-bold">
+                      #{i + 1}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="cell-titulo">
+                      <p className="text-truncate">
+                        Lorem ipsum, dolor sit amet consectetur adipisicing
+                        elit. Perferendis, molestias dolorum libero reiciendis
+                        quo fugiat in asperiores omnis nam tempora numquam, quas
+                        commodi? Harum officia sunt ullam veritatis velit
+                        nostrum.
+                      </p>
+                    </div>
+                  </td>
+                  <td className="text-center">{i + 1}</td>
+                  <td className="text-center">{i + 1}</td>
+                  <td className="text-center">{i + 1}</td>
+                  <td className="text-center">
+                    <Badge color="success">Venta</Badge>
+                  </td>
+                  <td className="big-cell">
+                    Av. Coronel Portillo, LT1, MZ2, km 5, #1076
+                  </td>
+                  <td className="text-center">
+                    <CustomInput
+                      type="switch"
+                      id={`primary-${i}`}
+                      name={`primary-${i}`}
+                      inline
+                      defaultChecked
+                    />
+                  </td>
+                  <td className="text-center">
+                    <CustomInput
+                      className=".custom-control-info"
+                      type="switch"
+                      id={`secundary-${i}`}
+                      name={`secundary-${i}`}
+                      inline
+                      defaultChecked
+                    />
+                  </td>
+                  <td>
+                    <UncontrolledDropdown>
+                      <DropdownToggle
+                        className="icon-btn hide-arrow"
+                        color="transparent"
+                        size="sm"
+                        caret
+                      >
+                        <MoreVertical size={15} />
+                      </DropdownToggle>
+                      <DropdownMenu right>
+                        <DropdownItem
+                          href="/"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <Edit className="mr-50" size={15} />{' '}
+                          <span className="align-middle">Editar</span>
+                        </DropdownItem>
+                        <DropdownItem
+                          href="/"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <Trash className="mr-50" size={15} />{' '}
+                          <span className="align-middle">Borrar</span>
+                        </DropdownItem>
+                        <DropdownItem
+                          href="/"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <Image className="mr-50" size={15} />{' '}
+                          <span className="align-middle">Ver Imagenes</span>
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </TableBasic>
+        <CustomPagination />
       </Card>
 
       <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
