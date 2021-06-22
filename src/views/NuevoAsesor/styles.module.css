@@ -1,0 +1,67 @@
+.addAvatar {
+  height: 200px;
+  border: 1px solid teal;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 200px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+
+  transition: transform 0.3s ease;
+}
+
+.addAvatar:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.modal {
+  width: 85vw;
+  max-width: 85vw;
+}
+
+.box {
+  position: relative;
+  width: 15rem;
+  height: 10rem;
+  display: grid;
+  margin: 0.5rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  place-items: center;
+  border: 1px solid teal;
+  transition: transform 0.3s ease;
+}
+
+.box button {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+
+  width: 2rem;
+  height: 2rem;
+
+  border: none;
+  outline: none;
+  border-radius: 0.5rem;
+}
+
+.box img {
+  width: 100%;
+  /* z-index: -1; */
+  object-fit: cover;
+  transform: translateY(-10%);
+}
+
+.box:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.place-items-center {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}

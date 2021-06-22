@@ -11,11 +11,13 @@ import { isObjEmpty } from '@utils'
 import classnames from 'classnames'
 import { useForm } from 'react-hook-form'
 import { Button, FormGroup, Label, FormText, Form, Input } from 'reactstrap'
-import FileUploaderBasic from '../../../../components/file-uploader/FileUploaderBasic'
+import Modal from '../Imagenes/Modal'
 
 import './styles.css'
+import useDisclosure from '../../../../utility/hooks/useDisclosure'
 
 const SidebarNuevosPlanos = ({ open, toggleSidebar }) => {
+  const { open: isOpen, onToggle } = useDisclosure()
   // ** Vars
   const { register, errors, handleSubmit } = useForm()
 
@@ -76,13 +78,17 @@ const SidebarNuevosPlanos = ({ open, toggleSidebar }) => {
             })}`}
           />
         </FormGroup>
-        <FileUploaderBasic />
-        <Button type="submit" className="mr-1" color="primary">
-          Submit
-        </Button>
-        <Button type="reset" color="secondary" outline onClick={toggleSidebar}>
-          Cancel
-        </Button>
+        <Button className="w-100" onClick={onToggle}>Agregar Imagen</Button>
+        <Modal {...{open: isOpen, toggleModal: onToggle}} />
+
+        <div className="mt-5 row">
+          <Button type="submit" className="mx-1 col" color="primary">
+            Guardar
+          </Button>
+          <Button type="reset" className="mx-1 col" color="secondary" outline onClick={toggleSidebar}>
+            Cancelar
+          </Button>
+        </div>
       </Form>
     </Sidebar>
   )

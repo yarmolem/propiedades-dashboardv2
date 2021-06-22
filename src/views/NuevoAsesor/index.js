@@ -11,12 +11,19 @@ import {
   Input
 } from 'reactstrap'
 import Select from 'react-select'
-import FileUploaderBasic from '../../components/file-uploader/FileUploaderBasic'
+import { Plus } from 'react-feather'
 
-const NuevoAsesor = ({ stepper, id }) => {
+import styles from './styles.module.css'
+import Modal from './Modal'
+import useDisclosure from '../../utility/hooks/useDisclosure'
+
+const NuevoAsesor = ({ id }) => {
+  const { open, onToggle } = useDisclosure()
   const { register, errors, handleSubmit } = useForm()
 
   return (
+    <>
+    <Modal {...{open, onToggle}} />
     <Card>
       <CardBody>
         <CardTitle tag="h4" className="mb-2">
@@ -24,7 +31,12 @@ const NuevoAsesor = ({ stepper, id }) => {
         </CardTitle>
         <Form onSubmit={(e) => e.preventDefault()}>
           <div className="row">
-            <div className="col-12 col-xl-8">
+            <div className={`col-12 col-xl-3 ${styles['place-items-center']}`}>
+              <div onClick={onToggle} className={styles.addAvatar}>
+                <Plus size={50} />
+              </div>
+            </div>
+            <div className="col-12 col-xl-9">
               <div className="row">
                 <FormGroup className="col-12 col-sm-6 ">
                   <Label for="nombres">Nombres</Label>
@@ -175,11 +187,6 @@ const NuevoAsesor = ({ stepper, id }) => {
                 </div>
               </div>
             </div>
-            <div className="col-12 col-xl-4">
-              <div className="mt-2">
-                <FileUploaderBasic />
-              </div>
-            </div>
           </div>
           <FormGroup className="d-flex mb-0">
             <Button.Ripple
@@ -194,6 +201,7 @@ const NuevoAsesor = ({ stepper, id }) => {
         </Form>
       </CardBody>
     </Card>
+    </>
   )
 }
 

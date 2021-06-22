@@ -39,9 +39,9 @@ import withReactContent from 'sweetalert2-react-content'
 
 // ** Styles
 import 'animate.css/animate.css'
+import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
-import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
 import styles from './styles.module.css'
 
 const MySwal = withReactContent(Swal)

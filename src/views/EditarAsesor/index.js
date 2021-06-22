@@ -15,11 +15,16 @@ import Avatar from '@components/avatar'
 import avatarImg from '../../assets/images/avatars/1.png'
 
 import styles from './styles.module.css'
+import Modal from '../NuevoAsesor/Modal'
+import useDisclosure from '../../utility/hooks/useDisclosure'
 
 const EditarAsesor = ({ stepper, id }) => {
+  const { open, onToggle } = useDisclosure()
   const { register, errors, handleSubmit } = useForm()
 
   return (
+    <>
+    <Modal {...{ open, onToggle }} />
     <Card>
       <CardBody>
         <CardTitle tag="h4" className="mb-2">
@@ -28,13 +33,10 @@ const EditarAsesor = ({ stepper, id }) => {
         <Form onSubmit={(e) => e.preventDefault()}>
           <div className="row">
             <div className="col-12 col-xl-3 d-flex align-items-center justify-content-center">
-              <input id="avatar-select" type="file" className="d-none" />
               <img
                 src={avatarImg}
                 className={styles.avatar}
-                onClick={() => {
-                  document.getElementById('avatar-select').click()
-                }}
+                onClick={onToggle}
               />
             </div>
             <div className="col-12 col-xl-9">
@@ -203,6 +205,7 @@ const EditarAsesor = ({ stepper, id }) => {
         </Form>
       </CardBody>
     </Card>
+    </>
   )
 }
 

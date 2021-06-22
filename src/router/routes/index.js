@@ -22,11 +22,11 @@ const Routes = [
   },
   {
     path: '/imagenes',
-    component: lazy(() => import('../../views/Imagenes/index'))
+    component: lazy(() => import('../../views/Imagenes'))
   },
   {
     path: '/clientes',
-    component: lazy(() => import('../../views/Clientes'))
+    component: lazy(() => import('../../views/Clientes/index'))
   },
   {
     path: '/asesores',
