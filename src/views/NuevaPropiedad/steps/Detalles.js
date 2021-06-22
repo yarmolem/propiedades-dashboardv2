@@ -12,7 +12,7 @@ import {
 } from 'reactstrap'
 import Select from 'react-select'
 
-const NuevaPropiedad = ({ stepper }) => {
+const NuevaPropiedad = ({ stepper, id }) => {
   const { register, errors, handleSubmit } = useForm()
 
   const tipoContractOpts = [
@@ -25,7 +25,7 @@ const NuevaPropiedad = ({ stepper }) => {
   return (
     <>
       <CardTitle tag="h4" className="mb-0">
-        Nueva Propiedad
+        {id ? 'Editar' : 'Nueva'} Propiedad
       </CardTitle>
       <CardBody>
         <Form onSubmit={(e) => e.preventDefault()}>
@@ -40,7 +40,7 @@ const NuevaPropiedad = ({ stepper }) => {
             />
           </FormGroup>
           <div className="row">
-            <FormGroup className="col">
+            <FormGroup className="col-12 col-sm-6 ">
               <Label for="emailBasic">Asesor</Label>
               <Select
                 isClearable={false}
@@ -51,7 +51,7 @@ const NuevaPropiedad = ({ stepper }) => {
                 // theme={selectThemeColors}
               />
             </FormGroup>
-            <FormGroup className="col">
+            <FormGroup className="col-12 col-sm-6 ">
               <Label for="lastNameBasic">Video de presentación</Label>
               <Input
                 id="lastNameBasic"
@@ -97,28 +97,6 @@ const NuevaPropiedad = ({ stepper }) => {
               />
             </FormGroup>
             <FormGroup className="col">
-              <Label for="emailBasic">Dimensiones</Label>
-              <Input
-                type="number"
-                name="emailBasic"
-                id="emailBasic"
-                innerRef={register({ required: true })}
-                invalid={errors.emailBasic && true}
-                placeholder="5x70x10"
-              />
-            </FormGroup>
-            <FormGroup className="col">
-              <Label for="emailBasic">Area Construida</Label>
-              <Input
-                type="number"
-                name="emailBasic"
-                id="emailBasic"
-                innerRef={register({ required: true })}
-                invalid={errors.emailBasic && true}
-                placeholder="70m2"
-              />
-            </FormGroup>
-            <FormGroup className="col">
               <Label for="emailBasic">Antiguedad</Label>
               <Input
                 type="number"
@@ -129,9 +107,31 @@ const NuevaPropiedad = ({ stepper }) => {
                 placeholder="1998"
               />
             </FormGroup>
+            <FormGroup className="col col-md-3 col-lg-2">
+              <Label for="emailBasic">Dimensiones</Label>
+              <Input
+                type="number"
+                name="emailBasic"
+                id="emailBasic"
+                innerRef={register({ required: true })}
+                invalid={errors.emailBasic && true}
+                placeholder="5x70x10"
+              />
+            </FormGroup>
+            <FormGroup className="col col-md-3 col-lg-2">
+              <Label for="emailBasic">Area Construida</Label>
+              <Input
+                type="number"
+                name="emailBasic"
+                id="emailBasic"
+                innerRef={register({ required: true })}
+                invalid={errors.emailBasic && true}
+                placeholder="70m2"
+              />
+            </FormGroup>
           </div>
           <div className="row">
-            <FormGroup className="col">
+            <FormGroup className="col-12 col-sm-4">
               <Label for="emailBasic">Tipo de Contrato</Label>
               <Select
                 isClearable={false}
@@ -142,7 +142,7 @@ const NuevaPropiedad = ({ stepper }) => {
                 // theme={selectThemeColors}
               />
             </FormGroup>
-            <FormGroup className="col">
+            <FormGroup className="col-12 col-sm-4">
               <Label for="emailBasic">Dirección</Label>
               <Input
                 type="text"
@@ -177,7 +177,7 @@ const NuevaPropiedad = ({ stepper }) => {
             </FormGroup>
           </div>
           <div className="row">
-            <FormGroup className="col">
+            <FormGroup className="col-12 col-xl-5">
               <Label for="emailBasic">Breve descripción</Label>
               <Input
                 type="textarea"
@@ -188,7 +188,7 @@ const NuevaPropiedad = ({ stepper }) => {
                 placeholder="....."
               />
             </FormGroup>
-            <FormGroup className="col-7">
+            <FormGroup className="col-12 col-xl-7">
               <Label for="emailBasic">Descripción</Label>
               <Input
                 type="textarea"
@@ -200,27 +200,28 @@ const NuevaPropiedad = ({ stepper }) => {
               />
             </FormGroup>
           </div>
-          <div className="d-flex w-25 ml-2 mb-2">
-            <FormGroup tag="fieldset" className="mr-2" row>
-              <legend className="col-form-label">Estado</legend>
-              <CustomInput
-                className=".custom-control-info"
-                type="switch"
-                id={`secundary-${1}`}
-                name={`secundary-${2}`}
-                inline
-              />
-            </FormGroup>
-            <FormGroup tag="fieldset" row>
-              <legend className="col-form-label">¿Deseas Destacar?</legend>
-              <CustomInput
-                className="ml-3"
-                type="switch"
-                id={`secundary-${1}`}
-                name={`secundary-${2}`}
-                inline
-              />
-            </FormGroup>
+          <div className="d-flex mb-2 mx-auto">
+            <div className="d-flex">
+              <FormGroup className="col-4 d-flex flex-column justify-content-center">
+                <Label for="emailBasic">Estado</Label>
+                <CustomInput
+                  type="switch"
+                  id={`primary-${1}`}
+                  name={`primary-${2}`}
+                  inline
+                />
+              </FormGroup>
+              <FormGroup className="d-flex flex-column justify-content-center">
+                <Label for="emailBasic">¿Deseas destacar?</Label>
+                <CustomInput
+                  className="ml-3"
+                  type="switch"
+                  id={`secundary-${3}`}
+                  name={`secundary-${4}`}
+                  inline
+                />
+              </FormGroup>
+            </div>
           </div>
           <FormGroup className="d-flex mb-0">
             <Button.Ripple

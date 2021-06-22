@@ -33,7 +33,7 @@ const Modal = ({ open, toggleModal }) => {
         Selecciona las imagenes de la propiedad
       </ModalHeader>
       <ModalBody>
-        <div className="d-flex flex-wrap">
+        <div className="d-flex flex-wrap justify-content-center">
           {Array(50)
             .fill(null)
             .map((_, i) => (

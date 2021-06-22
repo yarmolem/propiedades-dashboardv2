@@ -1,6 +1,6 @@
 // ** React Imports
 import { Fragment, useEffect, useRef, useState } from 'react'
-
+import { useParams } from 'react-router-dom'
 // ** Custom Components
 import Wizard from '@components/wizard'
 import BreadCrumbs from '@components/breadcrumbs'
@@ -16,7 +16,8 @@ import { ShoppingCart, Home, Image, FilePlus } from 'react-feather'
 // ** Styles
 import '@styles/base/pages/app-ecommerce.scss'
 
-const Checkout = () => {
+const NuevaPropiedad = () => {
+  const { id } = useParams()
   // ** Ref & State
   const ref = useRef(null)
   const [stepper, setStepper] = useState(null)
@@ -27,21 +28,21 @@ const Checkout = () => {
       title: 'Detalles',
       subtitle: 'Informacion de la Propiedad',
       icon: <Home size={18} />,
-      content: <Detalles stepper={stepper} />
+      content: <Detalles {...{ id, stepper }} />
     },
     {
       id: 'planos',
       title: 'Planos',
       subtitle: 'Planos de la propiedad',
       icon: <FilePlus size={18} />,
-      content: <Planos stepper={stepper} />
+      content: <Planos {...{ id, stepper }} />
     },
     {
       id: 'imagenes',
       title: 'Imagenes',
       subtitle: 'Imagenes de la propiedad',
       icon: <Image size={18} />,
-      content: <Imagenes stepper={stepper} />
+      content: <Imagenes {...{ id, stepper }} />
     }
   ]
 
@@ -60,4 +61,4 @@ const Checkout = () => {
   )
 }
 
-export default Checkout
+export default NuevaPropiedad

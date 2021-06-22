@@ -21,7 +21,7 @@ const Imagenes = () => {
         <h1 className="flex-fill">Imagenes</h1>
       </div>
 
-      <div className="d-flex flex-wrap">
+      <div className="d-flex flex-wrap justify-content-center justify-content-md-start mb-2">
         <div className="image-box">
           <img src={IMGPlaceholder} />
         </div>

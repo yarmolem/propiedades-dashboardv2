@@ -9,8 +9,20 @@ const DefaultRoute = '/inicio'
 // ** Merge Routes
 const Routes = [
   {
+    path: '/login',
+    component: lazy(() => import('../../views/Login')),
+    layout: 'BlankLayout',
+    meta: {
+      authRoute: true
+    }
+  },
+  {
     path: '/inicio',
     component: lazy(() => import('../../views/Inicio'))
+  },
+  {
+    path: '/imagenes',
+    component: lazy(() => import('../../views/Imagenes/index'))
   },
   {
     path: '/clientes',
@@ -21,11 +33,23 @@ const Routes = [
     component: lazy(() => import('../../views/Asesores'))
   },
   {
+    path: '/nuevo-asesor',
+    component: lazy(() => import('../../views/NuevoAsesor'))
+  },
+  {
+    path: '/editar-asesor/:id',
+    component: lazy(() => import('../../views/EditarAsesor'))
+  },
+  {
     path: '/propiedades',
     component: lazy(() => import('../../views/Propiedades'))
   },
   {
     path: '/nueva-propiedad',
+    component: lazy(() => import('../../views/NuevaPropiedad'))
+  },
+  {
+    path: '/editar-propiedad/:id',
     component: lazy(() => import('../../views/NuevaPropiedad'))
   },
   {

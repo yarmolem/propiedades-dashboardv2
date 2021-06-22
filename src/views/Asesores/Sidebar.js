@@ -8,14 +8,11 @@ import Sidebar from '@components/sidebar'
 import { isObjEmpty } from '@utils'
 
 // ** Third Party Components
+import Select from 'react-select'
 import classnames from 'classnames'
 import { useForm } from 'react-hook-form'
 import { Button, FormGroup, Label, FormText, Form, Input } from 'reactstrap'
 import FileUploaderBasic from '../../components/file-uploader/FileUploaderBasic'
-
-import 'uppy/dist/uppy.css'
-import '@uppy/status-bar/dist/style.css'
-import '@styles/react/libs/file-uploader/file-uploader.scss'
 
 const SidebarNewUsers = ({ open, toggleSidebar }) => {
   // ** States
@@ -31,6 +28,12 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
       toggleSidebar()
     }
   }
+
+  const documentoOpts = [
+    { value: '0', label: 'DNI' },
+    { value: '1', label: 'Pasaporte' },
+    { value: '2', label: 'Carnet de extranjeria' }
+  ]
 
   return (
     <Sidebar
@@ -62,6 +65,32 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
             id="telefono"
             name="telefono"
             placeholder="999 999 999"
+            innerRef={register({ required: true })}
+            className={classnames({ 'is-invalid': errors['telefono'] })}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="tipoDocumento">
+            Tipo de documento <span className="text-danger">*</span>
+          </Label>
+          <Select
+            id="tipoDocumento"
+            isClearable={false}
+            options={documentoOpts}
+            className="react-select"
+            classNamePrefix="select"
+            placeholder="Seleccione documento"
+            // theme={selectThemeColors}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="nroDocumento">
+            Nro. documento <span className="text-danger">*</span>
+          </Label>
+          <Input
+            id="nroDocumento"
+            name="nroDocumento"
+            placeholder="00354868"
             innerRef={register({ required: true })}
             className={classnames({ 'is-invalid': errors['telefono'] })}
           />
@@ -100,6 +129,45 @@ const SidebarNewUsers = ({ open, toggleSidebar }) => {
             placeholder="@JohnDoe"
             innerRef={register({ required: true })}
             className={classnames({ 'is-invalid': errors['facebook'] })}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="departamento">
+            Departamento <span className="text-danger">*</span>
+          </Label>
+          <Select
+            id="departamento"
+            isClearable={false}
+            options={[{ value: '', label: 'Departamento' }]}
+            className="react-select"
+            classNamePrefix="select"
+            placeholder="Seleccione Departamento"
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="provincia">
+            Provincia <span className="text-danger">*</span>
+          </Label>
+          <Select
+            id="provincia"
+            isClearable={false}
+            options={[{ value: '', label: 'Provincia' }]}
+            className="react-select"
+            classNamePrefix="select"
+            placeholder="Seleccione Provincia"
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="distrito">
+            Distrito <span className="text-danger">*</span>
+          </Label>
+          <Select
+            id="distrito"
+            isClearable={false}
+            options={[{ value: '', label: 'Distrito' }]}
+            className="react-select"
+            classNamePrefix="select"
+            placeholder="Seleccione Distrito"
           />
         </FormGroup>
 

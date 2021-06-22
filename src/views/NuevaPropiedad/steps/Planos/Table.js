@@ -17,8 +17,8 @@ const Table = () => {
         <thead>
           <tr>
             <th>Titulo</th>
-            <th>Descripcion Corta</th>
             <th>Descripcion Larga</th>
+            <th>Descripcion Corta</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -29,7 +29,7 @@ const Table = () => {
               <tr key={i}>
                 <td>
                   <span className="align-middle font-weight-bold">
-                    Angular Project
+                    Piso {i + 1}
                   </span>
                 </td>
                 <td>

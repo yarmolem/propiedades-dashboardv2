@@ -13,8 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 // ** Third Party Components
 import Select from 'react-select'
 import ReactPaginate from 'react-paginate'
-import { ChevronDown } from 'react-feather'
-import DataTable from 'react-data-table-component'
+import { MoreVertical, Edit, Trash, Image } from 'react-feather'
 import { selectThemeColors } from '@utils'
 import {
   Card,
@@ -26,12 +25,27 @@ import {
   Col,
   Label,
   CustomInput,
-  Button
+  Button,
+  Badge,
+  Tooltip,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  Table as TableBasic
 } from 'reactstrap'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 // ** Styles
+import 'animate.css/animate.css'
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
+import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
+import styles from './styles.module.css'
+import { useHistory } from 'react-router-dom'
+
+const MySwal = withReactContent(Swal)
 
 // ** Table Header
 const CustomHeader = ({
@@ -41,6 +55,8 @@ const CustomHeader = ({
   handleFilter,
   searchTerm
 }) => {
+  const history = useHistory()
+
   return (
     <div className="invoice-list-table-header w-100 mr-1 ml-50 mt-2 mb-75">
       <Row>
@@ -83,7 +99,11 @@ const CustomHeader = ({
               onChange={(e) => handleFilter(e.target.value)}
             />
           </div>
-          <Button.Ripple color="primary" onClick={toggleSidebar}>
+          <Button.Ripple
+            outline
+            color="primary"
+            onClick={() => history.push('/nuevo-asesor')}
+          >
             Nuevo asesor
           </Button.Ripple>
         </Col>
@@ -93,6 +113,7 @@ const CustomHeader = ({
 }
 
 const UsersList = () => {
+  const history = useHistory()
   // ** Store Vars
   const store = useSelector((state) => state.users)
 
@@ -138,6 +159,34 @@ const UsersList = () => {
     { value: 'active', label: 'Active' },
     { value: 'inactive', label: 'Inactive' }
   ]
+
+  // ** Handle Alert
+  const HandleDelete = () => {
+    return MySwal.fire({
+      title: '¿Estas seguro?',
+      text: 'No podras recuperar esta información!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si, eliminar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ml-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        MySwal.fire({
+          icon: 'success',
+          title: 'Eliminado!',
+          text: 'El Asesor ha sido eliminado.',
+          customClass: {
+            confirmButton: 'btn btn-success'
+          }
+        })
+      }
+    })
+  }
 
   // ** Custom Pagination
   const CustomPagination = () => {
@@ -210,70 +259,90 @@ const UsersList = () => {
       </Card>
 
       <Card>
-        <DataTable
-          noHeader
-          pagination
-          subHeader
-          responsive
-          paginationServer
-          columns={columns}
-          sortIcon={<ChevronDown />}
-          className="react-dataTable"
-          paginationComponent={CustomPagination}
-          data={[
-            {
-              id: 1,
-              fullName: 'Galen Slixby',
-              company: 'Yotz PVT LTD',
-              role: 'editor',
-              username: 'gslixby0',
-              country: 'El Salvador',
-              contact: '(479) 232-9151',
-              email: 'gslixby0@abc.net.au',
-              currentPlan: 'enterprise',
-              status: 'inactive',
-              avatar: ''
-            },
-            {
-              id: 2,
-              fullName: 'Halsey Redmore',
-              company: 'Skinder PVT LTD',
-              role: 'author',
-              username: 'hredmore1',
-              country: 'Albania',
-              contact: '(472) 607-9137',
-              email: 'hredmore1@imgur.com',
-              currentPlan: 'team',
-              status: 'pending',
-              avatar: require('@src/assets/images/avatars/10.png').default
-            },
-            {
-              id: 3,
-              fullName: 'Marjory Sicely',
-              company: 'Oozz PVT LTD',
-              role: 'maintainer',
-              username: 'msicely2',
-              country: 'Russia',
-              contact: '(321) 264-4599',
-              email: 'msicely2@who.int',
-              currentPlan: 'enterprise',
-              status: 'active',
-              avatar: require('@src/assets/images/avatars/1.png').default
-            }
-          ]}
-          subHeaderComponent={
-            <CustomHeader
-              handleFilter={() => {}}
-              searchTerm={searchTerm}
-              handlePerPage={() => {}}
-              rowsPerPage={rowsPerPage}
-              toggleSidebar={toggleSidebar}
-            />
-          }
-        />
+        <div className="mx-3">
+          <CustomHeader {...{ toggleSidebar }} />
+        </div>
+        <TableBasic className="w-full" responsive>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombres</th>
+              <th>Documento</th>
+              <th>Email</th>
+              <th className="text-center">Facebook</th>
+              <th className="text-center">Whatsapp</th>
+              <th className="text-center">Celular</th>
+              <th className="text-center">Estado</th>
+              <th className="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array(3)
+              .fill(null)
+              .map((_, i) => (
+                <tr key={i}>
+                  <td>
+                    <span className="align-middle font-weight-bold">
+                      #{i + 1}
+                    </span>
+                  </td>
+                  <td>
+                    <div>Victoria Diaz</div>
+                  </td>
+                  <td>DNI - 003546846</td>
+                  <td>example@example.com</td>
+                  <td className="text-center">@Diamanteros</td>
+                  <td className="text-center">+51 999 999 999</td>
+                  <td className="text-center">+51 999 999 999</td>
+                  <td className="text-center">
+                    <CustomInput
+                      className="ml-2"
+                      type="switch"
+                      id={`secundary-${i}`}
+                      name={`secundary-${i}`}
+                      inline
+                      defaultChecked
+                    />
+                  </td>
+                  <td>
+                    <UncontrolledDropdown>
+                      <DropdownToggle
+                        className="icon-btn hide-arrow"
+                        color="transparent"
+                        size="sm"
+                        caret
+                      >
+                        <MoreVertical size={15} />
+                      </DropdownToggle>
+                      <DropdownMenu right>
+                        <DropdownItem
+                          className="w-100"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            history.push(`/editar-asesor/${i}`)
+                          }}
+                        >
+                          <Edit className="mr-50" size={15} />{' '}
+                          <span className="align-middle">Editar</span>
+                        </DropdownItem>
+                        <DropdownItem
+                          className="w-100"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            HandleDelete()
+                          }}
+                        >
+                          <Trash className="mr-50" size={15} />
+                          <span className="align-middle">Borrar</span>
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </UncontrolledDropdown>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </TableBasic>
       </Card>
-
-      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
     </Fragment>
   )
 }

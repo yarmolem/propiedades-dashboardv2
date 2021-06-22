@@ -1,4 +1,4 @@
-import { Home, Users, Circle } from 'react-feather'
+import { Home, Users, Circle, Image } from 'react-feather'
 
 export default [
   {
@@ -9,6 +9,12 @@ export default [
   },
   {
     header: 'Administración'
+  },
+  {
+    id: 'imagenes',
+    title: 'Imagenes',
+    icon: <Image size={20} />,
+    navLink: '/imagenes'
   },
   {
     id: 'clientes',
@@ -26,6 +32,12 @@ export default [
         title: 'Lista',
         icon: <Circle size={12} />,
         navLink: '/asesores'
+      },
+      {
+        id: 'agregar',
+        title: 'Agregar',
+        icon: <Circle size={12} />,
+        navLink: '/nuevo-asesor'
       }
     ]
   },

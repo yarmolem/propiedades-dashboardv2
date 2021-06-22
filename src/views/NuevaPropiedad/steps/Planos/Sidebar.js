@@ -13,9 +13,7 @@ import { useForm } from 'react-hook-form'
 import { Button, FormGroup, Label, FormText, Form, Input } from 'reactstrap'
 import FileUploaderBasic from '../../../../components/file-uploader/FileUploaderBasic'
 
-import 'uppy/dist/uppy.css'
-import '@uppy/status-bar/dist/style.css'
-import '@styles/react/libs/file-uploader/file-uploader.scss'
+import './styles.css'
 
 const SidebarNuevosPlanos = ({ open, toggleSidebar }) => {
   // ** Vars
@@ -73,7 +71,9 @@ const SidebarNuevosPlanos = ({ open, toggleSidebar }) => {
             type="textarea"
             placeholder="lorem*5"
             innerRef={register({ required: true })}
-            className={classnames({ 'is-invalid': errors['email'] })}
+            className={`textarea-big ${classnames({
+              'is-invalid': errors['email']
+            })}`}
           />
         </FormGroup>
         <FileUploaderBasic />

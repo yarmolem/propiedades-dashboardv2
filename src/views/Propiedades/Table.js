@@ -1,14 +1,11 @@
 // ** React Imports
 import { useState } from 'react'
-
+import { useHistory } from 'react-router-dom'
 // ** Invoice List Sidebar
 import Sidebar from './Sidebar'
 
-// ** Columns
-import { columns } from './columns'
-
 // ** Store & Actions
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 // ** Third Party Components
 import Select from 'react-select'
@@ -31,14 +28,23 @@ import {
   UncontrolledDropdown,
   DropdownMenu,
   DropdownItem,
-  DropdownToggle
+  DropdownToggle,
+  UncontrolledTooltip as Tooltip
 } from 'reactstrap'
-import { useHistory } from 'react-router-dom'
+import Modal from './Modal'
+import useDisclosure from '../../utility/hooks/useDisclosure'
+
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 // ** Styles
+import 'animate.css/animate.css'
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
-import './styles.css'
+import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
+import styles from './styles.module.css'
+
+const MySwal = withReactContent(Swal)
 
 // ** Table Header
 const CustomHeader = ({
@@ -106,11 +112,13 @@ const CustomHeader = ({
   )
 }
 
-const UsersList = () => {
+const ListaPropiedades = () => {
+  const history = useHistory()
   // ** Store Vars
   const store = useSelector((state) => state.users)
 
   // ** States
+  const { open, onToggle } = useDisclosure()
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -152,6 +160,34 @@ const UsersList = () => {
     { value: 'active', label: 'Active' },
     { value: 'inactive', label: 'Inactive' }
   ]
+
+  // ** Handle Alert
+  const HandleDelete = () => {
+    return MySwal.fire({
+      title: '¿Estas seguro?',
+      text: 'No podras recuperar esta información!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si, eliminar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+        cancelButton: 'btn btn-outline-danger ml-1'
+      },
+      buttonsStyling: false
+    }).then(function (result) {
+      if (result.value) {
+        MySwal.fire({
+          icon: 'success',
+          title: 'Eliminada!',
+          text: 'La Propiedad ha sido eliminada.',
+          customClass: {
+            confirmButton: 'btn btn-success'
+          }
+        })
+      }
+    })
+  }
 
   // ** Custom Pagination
   const CustomPagination = () => {
@@ -231,15 +267,15 @@ const UsersList = () => {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Titulo</th>
-              <th>Baños</th>
-              <th>Cuartos</th>
-              <th>Pisos</th>
+              <th className="px-0">Titulo</th>
+              <th className="px-1 px-xl-0 text-center">Baños</th>
+              <th className="px-1 px-xl-0 text-center">Cuartos</th>
+              <th className="px-1 px-xl-0 text-center">Pisos</th>
               <th>Contrato</th>
               <th>Direccion</th>
-              <th>Estado</th>
-              <th>Destacar</th>
-              <th>Acciones</th>
+              <th className="px-0 text-center">Estado</th>
+              <th className="px-0 text-center">Destacar</th>
+              <th className="px-0 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -252,8 +288,8 @@ const UsersList = () => {
                       #{i + 1}
                     </span>
                   </td>
-                  <td>
-                    <div className="cell-titulo">
+                  <td className="px-0">
+                    <div className={styles['cell-titulo']}>
                       <p className="text-truncate">
                         Lorem ipsum, dolor sit amet consectetur adipisicing
                         elit. Perferendis, molestias dolorum libero reiciendis
@@ -263,17 +299,27 @@ const UsersList = () => {
                       </p>
                     </div>
                   </td>
-                  <td className="text-center">{i + 1}</td>
-                  <td className="text-center">{i + 1}</td>
-                  <td className="text-center">{i + 1}</td>
+                  <td className="text-center px-0">{i + 1}</td>
+                  <td className="text-center px-0">{i + 1}</td>
+                  <td className="text-center px-0">{i + 1}</td>
                   <td className="text-center">
                     <Badge color="success">Venta</Badge>
                   </td>
-                  <td className="big-cell">
-                    Av. Coronel Portillo, LT1, MZ2, km 5, #1076
+                  <td className={styles['cell-direccion']}>
+                    <p className="text-truncate" id="direccion">
+                      Av. Coronel Portillo, LT1, MZ2, km 5, #1076
+                    </p>
+                    <Tooltip
+                      className="d-block d-xl-none"
+                      placement="bottom"
+                      target="direccion"
+                    >
+                      Av. Coronel Portillo, LT1, MZ2, km 5, #1076
+                    </Tooltip>
                   </td>
-                  <td className="text-center">
+                  <td className="text-center px-0">
                     <CustomInput
+                      className="ml-2"
                       type="switch"
                       id={`primary-${i}`}
                       name={`primary-${i}`}
@@ -281,9 +327,9 @@ const UsersList = () => {
                       defaultChecked
                     />
                   </td>
-                  <td className="text-center">
+                  <td className="text-center px-0">
                     <CustomInput
-                      className=".custom-control-info"
+                      className="ml-2"
                       type="switch"
                       id={`secundary-${i}`}
                       name={`secundary-${i}`}
@@ -303,22 +349,31 @@ const UsersList = () => {
                       </DropdownToggle>
                       <DropdownMenu right>
                         <DropdownItem
-                          href="/"
-                          onClick={(e) => e.preventDefault()}
+                          className="w-100"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            history.push(`/editar-propiedad/${i}`)
+                          }}
                         >
                           <Edit className="mr-50" size={15} />{' '}
                           <span className="align-middle">Editar</span>
                         </DropdownItem>
                         <DropdownItem
-                          href="/"
-                          onClick={(e) => e.preventDefault()}
+                          className="w-100"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            HandleDelete()
+                          }}
                         >
-                          <Trash className="mr-50" size={15} />{' '}
+                          <Trash className="mr-50" size={15} />
                           <span className="align-middle">Borrar</span>
                         </DropdownItem>
                         <DropdownItem
                           href="/"
-                          onClick={(e) => e.preventDefault()}
+                          onClick={(e) => {
+                            e.preventDefault()
+                            onToggle()
+                          }}
                         >
                           <Image className="mr-50" size={15} />{' '}
                           <span className="align-middle">Ver Imagenes</span>
@@ -333,9 +388,11 @@ const UsersList = () => {
         <CustomPagination />
       </Card>
 
+      <Modal {...{ open, onToggle, id: 1 }} />
+
       <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
     </>
   )
 }
 
-export default UsersList
+export default ListaPropiedades
