@@ -8,9 +8,14 @@ import useDisclosure from '../../utility/hooks/useDisclosure'
 
 import IMGPlaceholder from '../../assets/images/pages/content-img-2.jpg'
 import styles from './styles.module.css'
+import { useGetImagenesQuery } from '../../generated/graphql'
 
 const ImagenesView = () => {
   const { open, onToggle } = useDisclosure()
+  const { loading, data } = useGetImagenesQuery()
+
+  const imagenes = data ? data.GetImagenes : []
+  console.log(imagenes)
 
   return (
     <>
@@ -24,14 +29,12 @@ const ImagenesView = () => {
               </Button>
             </div>
 
-            <div className="d-flex flex-wrap justify-content-center">
-              {Array(100)
-                .fill(null)
-                .map((_, i) => (
-                  <div key={i} className={styles.box}>
-                    <img src={IMGPlaceholder} />
-                  </div>
-                ))}
+            <div className="d-flex flex-wrap">
+              {imagenes.map(({ id, url, descripcion }, i) => (
+                <div key={id} className={styles.box}>
+                  <img src={url} alt={descripcion} />
+                </div>
+              ))}
             </div>
           </div>
         </CardBody>

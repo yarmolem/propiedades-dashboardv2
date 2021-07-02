@@ -1,8 +1,6 @@
 // ** React Imports
 import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-// ** Invoice List Sidebar
-import Sidebar from './Sidebar'
 
 // ** Third Party Components
 import Select from 'react-select'
@@ -28,17 +26,18 @@ import {
   DropdownToggle,
   UncontrolledTooltip as Tooltip
 } from 'reactstrap'
-import Modal from './Modal'
-import useDisclosure from '../../utility/hooks/useDisclosure'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
+import useDisclosure from '../../utility/hooks/useDisclosure'
+
 // ** Styles
 import 'animate.css/animate.css'
-import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
 import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
+import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
+
 import styles from './styles.module.css'
 
 const MySwal = withReactContent(Swal)
@@ -96,12 +95,12 @@ const CustomHeader = ({
             />
           </div>
           <Button.Ripple
-            onClick={() => history.push('/nueva-propiedad')}
+            onClick={() => history.push('/nueva-categoria')}
             color="primary"
             outline
             // onClick={toggleSidebar}
           >
-            Nueva propiedad
+            Nueva Categoria
           </Button.Ripple>
         </Col>
       </Row>
@@ -109,7 +108,7 @@ const CustomHeader = ({
   )
 }
 
-const ListaPropiedades = () => {
+const Categorys = () => {
   const history = useHistory()
 
   // ** States
@@ -190,65 +189,19 @@ const ListaPropiedades = () => {
   return (
     <>
       <Card>
-        <CardHeader>
-          <CardTitle tag="h4">Filtro</CardTitle>
-        </CardHeader>
-        <CardBody>
-          <Row>
-            <Col md="4">
-              <Select
-                isClearable={false}
-                theme={selectThemeColors}
-                className="react-select"
-                classNamePrefix="select"
-                options={roleOptions}
-                value={currentRole}
-                onChange={(data) => console.log(data)}
-              />
-            </Col>
-            <Col className="my-md-0 my-1" md="4">
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                options={planOptions}
-                value={currentPlan}
-                onChange={(data) => console.log(data)}
-              />
-            </Col>
-            <Col md="4">
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                options={statusOptions}
-                value={currentStatus}
-                onChange={(data) => console.log(data)}
-              />
-            </Col>
-          </Row>
-        </CardBody>
-      </Card>
-
-      <Card>
-        <div className="mx-3">
+        <div className="mx-3 mt-2">
+          <h1>Categorias</h1>
           <CustomHeader />
         </div>
         <TableBasic className="w-full" responsive>
           <thead>
             <tr>
               <th>ID</th>
-              <th className="px-0">Titulo</th>
-              <th className="px-1 px-xl-0 text-center">Baños</th>
-              <th className="px-1 px-xl-0 text-center">Cuartos</th>
-              <th className="px-1 px-xl-0 text-center">Pisos</th>
-              <th>Contrato</th>
-              <th>Direccion</th>
-              <th className="px-0 text-center">Estado</th>
-              <th className="px-0 text-center">Destacar</th>
-              <th className="px-0 text-center">Acciones</th>
+              <th>Nombre</th>
+              <th>Slug</th>
+              <th>Descripcion</th>
+              <th>Keywords</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -261,55 +214,11 @@ const ListaPropiedades = () => {
                       #{i + 1}
                     </span>
                   </td>
-                  <td className="px-0">
-                    <div className={styles['cell-titulo']}>
-                      <p className="text-truncate">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Perferendis, molestias dolorum libero reiciendis
-                        quo fugiat in asperiores omnis nam tempora numquam, quas
-                        commodi? Harum officia sunt ullam veritatis velit
-                        nostrum.
-                      </p>
-                    </div>
-                  </td>
-                  <td className="text-center px-0">{i + 1}</td>
-                  <td className="text-center px-0">{i + 1}</td>
-                  <td className="text-center px-0">{i + 1}</td>
-                  <td className="text-center">
-                    <Badge color="success">Venta</Badge>
-                  </td>
-                  <td className={styles['cell-direccion']}>
-                    <p className="text-truncate" id="direccion">
-                      Av. Coronel Portillo, LT1, MZ2, km 5, #1076
-                    </p>
-                    <Tooltip
-                      className="d-block d-xl-none"
-                      placement="bottom"
-                      target="direccion"
-                    >
-                      Av. Coronel Portillo, LT1, MZ2, km 5, #1076
-                    </Tooltip>
-                  </td>
-                  <td className="text-center px-0">
-                    <CustomInput
-                      className="ml-2"
-                      type="switch"
-                      id={`primary-${i}`}
-                      name={`primary-${i}`}
-                      inline
-                      defaultChecked
-                    />
-                  </td>
-                  <td className="text-center px-0">
-                    <CustomInput
-                      className="ml-2"
-                      type="switch"
-                      id={`secundary-${i}`}
-                      name={`secundary-${i}`}
-                      inline
-                      defaultChecked
-                    />
-                  </td>
+                  <td>Nombre</td>
+                  <td>Slug</td>
+                  <td>Descripcion</td>
+                  <td>Keywords</td>
+
                   <td>
                     <UncontrolledDropdown>
                       <DropdownToggle
@@ -360,12 +269,8 @@ const ListaPropiedades = () => {
         </TableBasic>
         <CustomPagination />
       </Card>
-
-      <Modal {...{ open, onToggle, id: 1 }} />
-
-      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
     </>
   )
 }
 
-export default ListaPropiedades
+export default Categorys

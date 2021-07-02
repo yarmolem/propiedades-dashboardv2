@@ -1,8 +1,9 @@
 // ** React Imports
-import { Suspense, useContext, lazy } from 'react'
+import { Suspense, useContext, lazy, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
 // ** Utils
-import { isUserLoggedIn } from '@utils'
+// import { isUserLoggedIn } from '@utils'
 import { useLayout } from '@hooks/useLayout'
 import { AbilityContext } from '@src/utility/context/Can'
 import { useRouterTransition } from '@hooks/useRouterTransition'
@@ -24,16 +25,28 @@ import { DefaultRoute, Routes } from './routes'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
+import useAuth from '../utility/hooks/useAuth'
 import VerticalLayout from '@src/layouts/VerticalLayout'
 import HorizontalLayout from '@src/layouts/HorizontalLayout'
+import { handleLogin } from '../redux/actions/auth'
 
 const Router = () => {
   // ** Hooks
+  const isAuth = useAuth()
+  const dispatch = useDispatch()
   const [layout, setLayout] = useLayout()
   const [transition, setTransition] = useRouterTransition()
 
   // ** ACL Ability Context
   const ability = useContext(AbilityContext)
+
+  useEffect(() => {
+    let userData = localStorage.getItem('userData')
+    if (userData) {
+      userData = JSON.parse(userData)
+      dispatch(handleLogin(userData))
+    }
+  }, [])
 
   // ** Default Layout
   const DefaultLayout =
@@ -85,8 +98,8 @@ const Router = () => {
     }
 
     if (
-      (!isUserLoggedIn() && route.meta === undefined) ||
-      (!isUserLoggedIn() &&
+      (!isAuth && route.meta === undefined) ||
+      (!isAuth &&
         route.meta &&
         !route.meta.authRoute &&
         !route.meta.publicRoute)
@@ -99,12 +112,9 @@ const Router = () => {
        */
 
       return <Redirect to="/login" />
-    } else if (route.meta && route.meta.authRoute && isUserLoggedIn()) {
+    } else if (route.meta && route.meta.authRoute && isAuth) {
       // ** If route has meta and authRole and user is Logged in then redirect user to home page (DefaultRoute)
       return <Redirect to="/" />
-    } else if (isUserLoggedIn() && !ability.can(action || 'read', resource)) {
-      // ** If user is Logged in and doesn't have ability to visit the page redirect the user to Not Authorized
-      return <Redirect to="/misc/not-authorized" />
     } else {
       // ** If none of the above render component
       return <route.component {...props} />
@@ -180,8 +190,8 @@ const Router = () => {
                               : {})}
                             /*eslint-enable */
                           >
-                            <route.component {...props} />
-                            {/* <FinalRoute route={route} {...props} /> */}
+                            {/* <route.component {...props} /> */}
+                            <FinalRoute route={route} {...props} />
                           </LayoutWrapper>
                         </Suspense>
                       )
@@ -204,18 +214,11 @@ const Router = () => {
           exact
           path="/"
           render={() => {
-            return isUserLoggedIn() ? (
+            return isAuth ? (
               <Redirect to={DefaultRoute} />
             ) : (
               <Redirect to="/login" />
             )
-          }}
-        />
-        <Route
-          exact
-          path="/"
-          render={() => {
-            return <Redirect to={DefaultRoute} />
           }}
         />
         {/* Not Auth Route */}

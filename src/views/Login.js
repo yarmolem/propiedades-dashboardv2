@@ -1,23 +1,49 @@
-import { useSkin } from '@hooks/useSkin'
-import { Link, Redirect } from 'react-router-dom'
-import { Facebook, Twitter, Mail, GitHub } from 'react-feather'
-import InputPasswordToggle from '@components/input-password-toggle'
+import { useState } from 'react'
+import * as Yup from 'yup'
+import { Formik } from 'formik'
+import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import {
   Row,
   Col,
-  CardTitle,
-  CardText,
   Form,
-  FormGroup,
+  Alert,
   Label,
   Input,
-  CustomInput,
-  Button
+  Button,
+  Spinner,
+  CardTitle,
+  FormGroup,
+  CustomInput
 } from 'reactstrap'
-import '@styles/base/pages/page-auth.scss'
 
-const Login = () => {
+// Components
+import { useSkin } from '@hooks/useSkin'
+import InputPasswordToggle from '@components/input-password-toggle'
+
+// hooks
+import { useLoginMutation } from '../generated/graphql'
+
+// Styles
+import '@styles/base/pages/page-auth.scss'
+import { handleLogin } from '../redux/actions/auth'
+
+const loginSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Formato de correo es invalido.')
+    .required('El correo es obligatorio.'),
+  password: Yup.string().required('La contraseña es obligatoria')
+})
+
+const Login = ({ history }) => {
+  const dispatch = useDispatch()
   const [skin, setSkin] = useSkin()
+  const [error, setError] = useState({ ok: true, msg: '' })
+  const [login, { loading }] = useLoginMutation({
+    onError: (err) => {}
+  })
+
+  const onDismiss = () => setError({ ok: true, msg: '' })
 
   const illustration = skin === 'dark' ? 'login-v2-dark.svg' : 'login-v2.svg',
     source = require(`@src/assets/images/pages/${illustration}`).default
@@ -92,7 +118,7 @@ const Login = () => {
               </g>
             </g>
           </svg>
-          <h2 className="brand-text text-primary ml-1">Vuexy</h2>
+          <h2 className="brand-text text-primary ml-1">Dashboard</h2>
         </Link>
         <Col className="d-none d-lg-flex align-items-center p-5" lg="8" sm="12">
           <div className="w-100 d-lg-flex align-items-center justify-content-center px-5">
@@ -108,64 +134,141 @@ const Login = () => {
             <CardTitle tag="h2" className="font-weight-bold mb-1">
               Bienvenido! 👋
             </CardTitle>
-            <Form
-              className="auth-login-form mt-2"
-              onSubmit={(e) => e.preventDefault()}
+            <Formik
+              validationSchema={loginSchema}
+              initialValues={{ email: '', password: '', holdConnect: false }}
+              onSubmit={async ({ holdConnect, ...input }) => {
+                const { data, errors } = await login({ variables: { input } })
+
+                if (errors) {
+                  const errorMsg = errors.graphQLErrors[0].debugMessage
+                  console.log(errorMsg)
+                  if (
+                    errorMsg === 'CONTRASEÑA_INCORRECTA' ||
+                    errorMsg === 'NO_EXISTE'
+                  ) {
+                    setError({
+                      ok: false,
+                      msg: 'Correo o contraseña invalida.'
+                    })
+                  } else {
+                    setError({
+                      ok: false,
+                      msg: 'Por favor contactar con el administrador.'
+                    })
+                  }
+                  return
+                }
+
+                console.log('LOGIN', data.login)
+
+                const {
+                  Distrito,
+                  Provincia,
+                  nroDocumento,
+                  Departamento,
+                  tipoDocumento,
+                  fechaNacimiento,
+                  ...payload
+                } = data.login
+
+                dispatch(handleLogin({ ...payload, holdConnect }))
+
+                history.push('/')
+              }}
             >
-              <FormGroup>
-                <Label className="form-label" for="login-email">
-                  Correo
-                </Label>
-                <Input
-                  type="email"
-                  id="login-email"
-                  placeholder="john@example.com"
-                  autoFocus
-                />
-              </FormGroup>
-              <FormGroup>
-                <div className="d-flex justify-content-between">
-                  <Label className="form-label" for="login-password">
-                    Contraseña
-                  </Label>
-                  <Link to="/">
-                    <small>Forgot Password?</small>
-                  </Link>
-                </div>
-                <InputPasswordToggle
-                  className="input-group-merge"
-                  id="login-password"
-                />
-              </FormGroup>
-              <FormGroup>
-                <CustomInput
-                  type="checkbox"
-                  className="custom-control-Primary"
-                  id="remember-me"
-                  label="Mantenerme conectado"
-                />
-              </FormGroup>
-              <Button.Ripple tag={Link} to="/inicio" color="primary" block>
-                Ingresar
-              </Button.Ripple>
-            </Form>
-            {/* <div className="divider my-2">
-              <div className="divider-text">or</div>
-            </div>
-            <div className="auth-footer-btn d-flex justify-content-center">
-              <Button.Ripple color="facebook">
-                <Facebook size={14} />
-              </Button.Ripple>
-              <Button.Ripple color="twitter">
-                <Twitter size={14} />
-              </Button.Ripple>
-              <Button.Ripple color="google">
-                <Mail size={14} />
-              </Button.Ripple>
-              <Button.Ripple className="mr-0" color="github">
-                <GitHub size={14} />
-              </Button.Ripple>
-            </div> */}
+              {({
+                values,
+                errors,
+                touched,
+                handleBlur,
+                handleSubmit,
+                handleChange,
+                isSubmitting
+              }) => {
+                const valid = (field) => {
+                  return errors[field] && touched[field] && errors[field]
+                }
+                return (
+                  <Form
+                    onSubmit={handleSubmit}
+                    className="auth-login-form mt-2"
+                  >
+                    <Alert isOpen={!error.ok} toggle={onDismiss} color="danger">
+                      <div className="p-1">{error.msg}</div>
+                    </Alert>
+                    <FormGroup>
+                      <Label className="form-label" for="login-email">
+                        Correo
+                      </Label>
+                      <Input
+                        type="email"
+                        name="email"
+                        autoComplete="off"
+                        id="login-email"
+                        invalid={valid('email')}
+                        onBlur={(e) => {
+                          onDismiss()
+                          handleBlur(e)
+                        }}
+                        value={values.email}
+                        onChange={handleChange}
+                        placeholder="john@example.com"
+                        autoFocus
+                      />
+                      <small className="text-danger">
+                        {errors.email && touched.email && errors.email}
+                      </small>
+                    </FormGroup>
+                    <FormGroup>
+                      <div className="d-flex justify-content-between">
+                        <Label className="form-label" for="login-password">
+                          Contraseña
+                        </Label>
+                        <Link to="/">
+                          <small>Recuperar contraseña</small>
+                        </Link>
+                      </div>
+                      <InputPasswordToggle
+                        id="login-password"
+                        name="password"
+                        onBlur={(e) => {
+                          onDismiss()
+                          handleBlur(e)
+                        }}
+                        value={values.password}
+                        onChange={handleChange}
+                        invalid={valid('password')}
+                        className="input-group-merge"
+                      />
+                      <small className="text-danger">
+                        {errors.password && touched.password && errors.password}
+                      </small>
+                    </FormGroup>
+                    <FormGroup>
+                      <CustomInput
+                        type="checkbox"
+                        id="remember-me"
+                        name="holdConnect"
+                        onChange={handleChange}
+                        value={values.holdConnect}
+                        label="Mantenerme conectado"
+                        className="custom-control-Primary"
+                      />
+                    </FormGroup>
+                    <Button.Ripple
+                      block
+                      type="submit"
+                      color="primary"
+                      disabled={loading}
+                    >
+                      {loading ? <Spinner size="sm" className="mr-1" /> : null}
+                      Ingresar
+                    </Button.Ripple>
+                  </Form>
+                )
+              }}
+            </Formik>
           </Col>
         </Col>
       </Row>

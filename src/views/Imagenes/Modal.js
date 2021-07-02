@@ -8,7 +8,6 @@ import {
   Progress
 } from 'reactstrap'
 import { Check } from 'react-feather'
-import IMGPlaceholder from '../../assets/images/pages/content-img-4.jpg'
 import FileUploaderBasic from '../../components/file-uploader/FileUploaderBasic'
 
 import styles from './styles.module.css'
@@ -33,11 +32,10 @@ const Modal = ({ open, toggleModal }) => {
       </ModalHeader>
       <ModalBody>
         <h1 className="my-2">Sube tus imagenes</h1>
-        <FileUploaderBasic {...{ setImgs, maxFiles: 6 }} />
+        <FileUploaderBasic {...{ setImgs, maxFiles: 1 }} />
         <div className="d-flex flex-wrap justify-content-center">
           {imgs.map((src, i) => (
             <div key={src + i} className="w-100 mb-1">
-              {/* <img src={src} /> */}
               <p>
                 <Check color="green" /> {src}
               </p>

@@ -2,6 +2,10 @@
 import { Suspense, lazy } from 'react'
 import ReactDOM from 'react-dom'
 
+// ** Apollo Provider
+import { ApolloProvider } from '@apollo/client'
+import client from './apollo'
+
 // ** Redux Imports
 import { Provider } from 'react-redux'
 import { store } from './redux/storeConfig/store'
@@ -23,14 +27,13 @@ import 'prismjs/components/prism-jsx.min'
 
 // ** React Perfect Scrollbar
 import 'react-perfect-scrollbar/dist/css/styles.css'
-
 // ** React Toastify
 import '@styles/react/libs/toastify/toastify.scss'
 
 // ** Core styles
-import './@core/assets/fonts/feather/iconfont.css'
 import './@core/scss/core.scss'
 import './assets/scss/style.scss'
+import './@core/assets/fonts/feather/iconfont.css'
 
 // ** Service Worker
 import * as serviceWorker from './serviceWorker'
@@ -40,12 +43,14 @@ const LazyApp = lazy(() => import('./App'))
 
 ReactDOM.render(
   <Provider store={store}>
-    <Suspense fallback={<Spinner />}>
-      <ThemeContext>
-        <LazyApp />
-        <ToastContainer newestOnTop />
-      </ThemeContext>
-    </Suspense>
+    <ApolloProvider client={client}>
+      <Suspense fallback={<Spinner />}>
+        <ThemeContext>
+          <LazyApp />
+          <ToastContainer newestOnTop />
+        </ThemeContext>
+      </Suspense>
+    </ApolloProvider>
   </Provider>,
   document.getElementById('root')
 )

@@ -14,6 +14,7 @@ module.exports = {
       experimentalObjectRestSpread: true
     }
   },
+  ignorePatterns: ['graphql.tsx', '**/generated/*.tsx'],
   rules: {
     'no-console': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -51,7 +52,10 @@ module.exports = {
     'no-unneeded-ternary': 'error',
     'no-whitespace-before-property': 'error',
     'nonblock-statement-body-position': 'error',
-    'object-property-newline': ['error', { allowAllPropertiesOnSameLine: true }],
+    'object-property-newline': [
+      'error',
+      { allowAllPropertiesOnSameLine: true }
+    ],
     'quote-props': ['error', 'as-needed'],
     // quotes: ['error', 'prefer-single'],
     semi: ['error', 'never'],

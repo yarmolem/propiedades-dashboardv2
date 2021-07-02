@@ -59,5 +59,11 @@ export default [
         navLink: '/nueva-propiedad'
       }
     ]
+  },
+  {
+    id: 'categorias',
+    title: 'Categorias',
+    icon: <Home size={20} />,
+    navLink: '/categorias'
   }
 ]

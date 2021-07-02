@@ -53,6 +53,10 @@ const Routes = [
     component: lazy(() => import('../../views/NuevaPropiedad'))
   },
   {
+    path: '/categorias',
+    component: lazy(() => import('../../views/Categorys'))
+  },
+  {
     path: '/error',
     component: lazy(() => import('../../views/Error')),
     layout: 'BlankLayout'

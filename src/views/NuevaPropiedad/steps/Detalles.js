@@ -4,11 +4,11 @@ import {
   CardBody,
   Button,
   Form,
+  Input,
   FormGroup,
   Label,
   Col,
-  CustomInput,
-  Input
+  CustomInput
 } from 'reactstrap'
 import Select from 'react-select'
 

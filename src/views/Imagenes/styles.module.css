@@ -1,5 +1,5 @@
 .container {
-  /* min-height: 60vh; */
+  min-height: 75vh;
   max-height: 80vh;
   overflow-y: auto;
 }
@@ -16,8 +16,8 @@
 }
 
 .box {
-  width: 25rem;
-  height: 16rem;
+  width: 20rem;
+  height: 11rem;
   display: grid;
   margin: 0.5rem;
   overflow: hidden;

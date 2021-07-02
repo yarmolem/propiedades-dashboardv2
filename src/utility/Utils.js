@@ -1,14 +1,16 @@
 // ** Checks if an object is empty (returns boolean)
-export const isObjEmpty = obj => Object.keys(obj).length === 0
+export const isObjEmpty = (obj) => Object.keys(obj).length === 0
 
 // ** Returns K format from a number
-export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
+export const kFormatter = (num) => {
+  return num > 999 ? `${(num / 1000).toFixed(1)}k` : num
+}
 
 // ** Converts HTML to string
-export const htmlToString = html => html.replace(/<\/?[^>]+(>|$)/g, '')
+export const htmlToString = (html) => html.replace(/<\/?[^>]+(>|$)/g, '')
 
 // ** Checks if the passed date is today
-const isToday = date => {
+const isToday = (date) => {
   const today = new Date()
   return (
     /* eslint-disable operator-linebreak */
@@ -26,7 +28,10 @@ const isToday = date => {
  * @param {String} value date to format
  * @param {Object} formatting Intl object to format with
  */
-export const formatDate = (value, formatting = { month: 'short', day: 'numeric', year: 'numeric' }) => {
+export const formatDate = (
+  value,
+  formatting = { month: 'short', day: 'numeric', year: 'numeric' }
+) => {
   if (!value) return value
   return new Intl.DateTimeFormat('en-US', formatting).format(new Date(value))
 }
@@ -49,6 +54,7 @@ export const formatDateToMonthShort = (value, toTimeForCurrentDay = true) => {
  *  ? e.g. If you are using cookies to store the application please update this function
  */
 export const isUserLoggedIn = () => localStorage.getItem('userData')
+// export const isUserLoggedIn = () => localStorage.getItem('token')
 export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
 
 /**
@@ -59,14 +65,14 @@ export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
  * ? NOTE: If you have different pages to navigate based on user ability then this function can be useful. However, you need to update it.
  * @param {String} userRole Role of user
  */
-export const getHomeRouteForLoggedInUser = userRole => {
+export const getHomeRouteForLoggedInUser = (userRole) => {
   if (userRole === 'admin') return '/'
   if (userRole === 'client') return '/access-control'
   return '/login'
 }
 
 // ** React Select Theme Colors
-export const selectThemeColors = theme => ({
+export const selectThemeColors = (theme) => ({
   ...theme,
   colors: {
     ...theme.colors,
