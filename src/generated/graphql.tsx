@@ -597,6 +597,24 @@ export type CreateImageMutation = (
   )> }
 );
 
+export type GetCategoriaQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCategoriaQuery = (
+  { __typename?: 'Query' }
+  & { GetAllCategorias?: Maybe<Array<Maybe<(
+    { __typename?: 'Categorias' }
+    & Pick<Categorias, 'categoriaId' | 'slugCategoria' | 'nombreCategoria' | 'descripcionCategoria' | 'KeywordsCategoria'>
+    & { ImagenPrincipal?: Maybe<(
+      { __typename?: 'Imagenes' }
+      & Pick<Imagenes, 'id' | 'url' | 'descripcion'>
+    )>, ImagenSecundaria?: Maybe<(
+      { __typename?: 'Imagenes' }
+      & Pick<Imagenes, 'id' | 'url' | 'descripcion'>
+    )> }
+  )>>> }
+);
+
 export type GetCategoriaSlugQueryVariables = Exact<{
   slugCategoria?: Maybe<Scalars['String']>;
 }>;
@@ -916,6 +934,54 @@ export function useCreateImageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateImageMutationHookResult = ReturnType<typeof useCreateImageMutation>;
 export type CreateImageMutationResult = Apollo.MutationResult<CreateImageMutation>;
 export type CreateImageMutationOptions = Apollo.BaseMutationOptions<CreateImageMutation, CreateImageMutationVariables>;
+export const GetCategoriaDocument = gql`
+    query GetCategoria {
+  GetAllCategorias: GetCategoria {
+    categoriaId
+    slugCategoria
+    nombreCategoria
+    descripcionCategoria
+    ImagenPrincipal {
+      id
+      url
+      descripcion
+    }
+    ImagenSecundaria {
+      id
+      url
+      descripcion
+    }
+    KeywordsCategoria
+  }
+}
+    `;
+
+/**
+ * __useGetCategoriaQuery__
+ *
+ * To run a query within a React component, call `useGetCategoriaQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCategoriaQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCategoriaQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCategoriaQuery(baseOptions?: Apollo.QueryHookOptions<GetCategoriaQuery, GetCategoriaQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCategoriaQuery, GetCategoriaQueryVariables>(GetCategoriaDocument, options);
+      }
+export function useGetCategoriaLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCategoriaQuery, GetCategoriaQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCategoriaQuery, GetCategoriaQueryVariables>(GetCategoriaDocument, options);
+        }
+export type GetCategoriaQueryHookResult = ReturnType<typeof useGetCategoriaQuery>;
+export type GetCategoriaLazyQueryHookResult = ReturnType<typeof useGetCategoriaLazyQuery>;
+export type GetCategoriaQueryResult = Apollo.QueryResult<GetCategoriaQuery, GetCategoriaQueryVariables>;
 export const GetCategoriaSlugDocument = gql`
     query GetCategoriaSlug($slugCategoria: String) {
   GetCategoriaSlug(slugCategoria: $slugCategoria) {

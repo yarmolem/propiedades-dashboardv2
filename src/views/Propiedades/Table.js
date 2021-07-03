@@ -1,31 +1,29 @@
 // ** React Imports
 import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-// ** Invoice List Sidebar
-import Sidebar from './Sidebar'
 
 // ** Third Party Components
 import Select from 'react-select'
+import { selectThemeColors } from '@utils'
 import ReactPaginate from 'react-paginate'
 import { MoreVertical, Edit, Trash, Image } from 'react-feather'
-import { selectThemeColors } from '@utils'
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Input,
   Row,
   Col,
+  Card,
   Label,
-  CustomInput,
-  Button,
-  Table as TableBasic,
+  Input,
   Badge,
-  UncontrolledDropdown,
+  Button,
+  CardBody,
+  CardTitle,
+  CardHeader,
+  CustomInput,
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
+  Table as TableBasic,
+  UncontrolledDropdown,
   UncontrolledTooltip as Tooltip
 } from 'reactstrap'
 import Modal from './Modal'
@@ -117,7 +115,6 @@ const ListaPropiedades = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentRole, setCurrentRole] = useState({
     value: '',
     label: 'Departamento'
@@ -130,9 +127,6 @@ const ListaPropiedades = () => {
     value: '',
     label: 'Distrito'
   })
-
-  // ** Function to toggle sidebar
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 
   // ** Handle Alert
   const HandleDelete = () => {
@@ -201,7 +195,7 @@ const ListaPropiedades = () => {
                 theme={selectThemeColors}
                 className="react-select"
                 classNamePrefix="select"
-                options={roleOptions}
+                // options={roleOptions}
                 value={currentRole}
                 onChange={(data) => console.log(data)}
               />
@@ -212,7 +206,7 @@ const ListaPropiedades = () => {
                 isClearable={false}
                 className="react-select"
                 classNamePrefix="select"
-                options={planOptions}
+                // options={planOptions}
                 value={currentPlan}
                 onChange={(data) => console.log(data)}
               />
@@ -223,7 +217,7 @@ const ListaPropiedades = () => {
                 isClearable={false}
                 className="react-select"
                 classNamePrefix="select"
-                options={statusOptions}
+                // options={statusOptions}
                 value={currentStatus}
                 onChange={(data) => console.log(data)}
               />
@@ -362,8 +356,6 @@ const ListaPropiedades = () => {
       </Card>
 
       <Modal {...{ open, onToggle, id: 1 }} />
-
-      <Sidebar open={sidebarOpen} toggleSidebar={toggleSidebar} />
     </>
   )
 }

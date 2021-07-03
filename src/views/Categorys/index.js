@@ -3,28 +3,21 @@ import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
 // ** Third Party Components
-import Select from 'react-select'
 import ReactPaginate from 'react-paginate'
 import { MoreVertical, Edit, Trash, Image } from 'react-feather'
-import { selectThemeColors } from '@utils'
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardBody,
-  Input,
   Row,
   Col,
+  Card,
+  Input,
   Label,
-  CustomInput,
   Button,
-  Table as TableBasic,
-  Badge,
-  UncontrolledDropdown,
+  CustomInput,
   DropdownMenu,
   DropdownItem,
   DropdownToggle,
-  UncontrolledTooltip as Tooltip
+  Table as TableBasic,
+  UncontrolledDropdown
 } from 'reactstrap'
 
 import Swal from 'sweetalert2'
@@ -38,85 +31,48 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
 
-import styles from './styles.module.css'
+import Sidebar from './Sidebar'
+import {
+  useGetCategoriaQuery,
+  useDeleteCategoriasMutation,
+  useGetCategoriaSlugLazyQuery,
+  GetCategoriaDocument as GET_ALL_CAT
+} from '../../generated/graphql'
+import { useApolloClient } from '@apollo/client'
 
 const MySwal = withReactContent(Swal)
-
-// ** Table Header
-const CustomHeader = ({
-  toggleSidebar,
-  handlePerPage,
-  rowsPerPage,
-  handleFilter,
-  searchTerm
-}) => {
-  const history = useHistory()
-
-  return (
-    <div className="invoice-list-table-header w-100 mr-1 ml-50 mt-2 mb-75">
-      <Row>
-        <Col xl="6" className="d-flex align-items-center p-0">
-          <div className="d-flex align-items-center w-100">
-            <Label for="rows-per-page">Mostrar</Label>
-            <CustomInput
-              className="form-control mx-50"
-              type="select"
-              id="rows-per-page"
-              value={rowsPerPage}
-              onChange={handlePerPage}
-              style={{
-                width: '5rem',
-                padding: '0 0.8rem',
-                backgroundPosition:
-                  'calc(100% - 3px) 11px, calc(100% - 20px) 13px, 100% 0'
-              }}
-            >
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-            </CustomInput>
-            <Label for="rows-per-page">elementos</Label>
-          </div>
-        </Col>
-        <Col
-          xl="6"
-          className="d-flex align-items-sm-center justify-content-lg-end justify-content-start flex-lg-nowrap flex-wrap flex-sm-row flex-column pr-lg-1 p-0 mt-lg-0 mt-1"
-        >
-          <div className="d-flex align-items-center mb-sm-0 mb-1 mr-1">
-            <Label className="mb-0" for="search-invoice">
-              Buscar:
-            </Label>
-            <Input
-              id="search-invoice"
-              className="ml-50 w-100"
-              type="text"
-              value={searchTerm}
-              onChange={(e) => handleFilter(e.target.value)}
-            />
-          </div>
-          <Button.Ripple
-            onClick={() => history.push('/nueva-categoria')}
-            color="primary"
-            outline
-            // onClick={toggleSidebar}
-          >
-            Nueva Categoria
-          </Button.Ripple>
-        </Col>
-      </Row>
-    </div>
-  )
-}
 
 const Categorys = () => {
   const history = useHistory()
 
   // ** States
   const { open, onToggle } = useDisclosure()
+  const [activeCat, setActiveCat] = useState({})
   const [searchTerm, setSearchTerm] = useState('')
+
+  const cache = useApolloClient()
+  const { data } = useGetCategoriaQuery()
+  const [getCatBySlug] = useGetCategoriaSlugLazyQuery({
+    fetchPolicy: 'network-only',
+    onCompleted: ({ GetCategoriaSlug }) => {
+      console.log(GetCategoriaSlug)
+      if (!GetCategoriaSlug) {
+        return console.log('No exite')
+      }
+
+      setActiveCat(GetCategoriaSlug)
+      onToggle()
+    }
+  })
+  const [deleteCategory] = useDeleteCategoriasMutation({
+    onError: (err) => {}
+  })
+
+  const isEditing = Object.keys(activeCat).length === 0
+  const categorias = data ? data.GetAllCategorias : []
+
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentRole, setCurrentRole] = useState({
     value: '',
     label: 'Departamento'
@@ -130,14 +86,18 @@ const Categorys = () => {
     label: 'Distrito'
   })
 
-  // ** Function to toggle sidebar
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
+  const searchCategory = () => {
+    console.log(searchTerm)
+    getCatBySlug({
+      variables: { slugCategoria: searchTerm }
+    })
+  }
 
   // ** Handle Alert
-  const HandleDelete = () => {
+  const HandleDelete = (categoriaId) => {
     return MySwal.fire({
       title: '¿Estas seguro?',
-      text: 'No podras recuperar esta información!',
+      text: 'No podras recuperar esta categoria!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Si, eliminar',
@@ -147,12 +107,24 @@ const Categorys = () => {
         cancelButton: 'btn btn-outline-danger ml-1'
       },
       buttonsStyling: false
-    }).then(function (result) {
+    }).then(async (result) => {
       if (result.value) {
+        await deleteCategory({
+          variables: { input: { categoriaId } }
+        })
+        const { GetAllCategorias } = cache.readQuery({ query: GET_ALL_CAT })
+        cache.writeQuery({
+          query: GET_ALL_CAT,
+          data: {
+            GetAllCategorias: GetAllCategorias.filter((cat) => {
+              return cat.categoriaId !== categoriaId
+            })
+          }
+        })
         MySwal.fire({
           icon: 'success',
           title: 'Eliminada!',
-          text: 'La Propiedad ha sido eliminada.',
+          text: 'La categoria ha sido eliminada.',
           customClass: {
             confirmButton: 'btn btn-success'
           }
@@ -191,7 +163,66 @@ const Categorys = () => {
       <Card>
         <div className="mx-3 mt-2">
           <h1>Categorias</h1>
-          <CustomHeader />
+          <div className="invoice-list-table-header w-100 mr-1 ml-50 mt-2 mb-75">
+            <Row>
+              <Col xl="6" className="d-flex align-items-center p-0">
+                <div className="d-flex align-items-center w-100">
+                  <Label for="rows-per-page">Mostrar</Label>
+                  <CustomInput
+                    className="form-control mx-50"
+                    type="select"
+                    id="rows-per-page"
+                    // value={rowsPerPage}
+                    // onChange={handlePerPage}
+                    style={{
+                      width: '5rem',
+                      padding: '0 0.8rem',
+                      backgroundPosition:
+                        'calc(100% - 3px) 11px, calc(100% - 20px) 13px, 100% 0'
+                    }}
+                  >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </CustomInput>
+                  <Label for="rows-per-page">elementos</Label>
+                </div>
+              </Col>
+              <Col
+                xl="6"
+                className="d-flex align-items-sm-center justify-content-lg-end justify-content-start flex-lg-nowrap flex-wrap flex-sm-row flex-column pr-lg-1 p-0 mt-lg-0 mt-1"
+              >
+                <div className="d-flex align-items-center mb-sm-0 mb-1 mr-1">
+                  <Label className="mb-0" for="search-invoice">
+                    Buscar:
+                  </Label>
+                  <Input
+                    type="text"
+                    value={searchTerm}
+                    id="search-invoice"
+                    className="ml-50 w-100"
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyPress={({ code }) => {
+                      if (code === 'Enter' || code === 'NumpadEnter') {
+                        searchCategory()
+                        setSearchTerm('')
+                      }
+                    }}
+                  />
+                </div>
+                <Button.Ripple
+                  outline
+                  color="primary"
+                  onClick={() => {
+                    onToggle()
+                    setActiveCat({})
+                  }}
+                >
+                  Nueva Categoria
+                </Button.Ripple>
+              </Col>
+            </Row>
+          </div>
         </div>
         <TableBasic className="w-full" responsive>
           <thead>
@@ -205,70 +236,70 @@ const Categorys = () => {
             </tr>
           </thead>
           <tbody>
-            {Array(3)
-              .fill(null)
-              .map((_, i) => (
-                <tr key={i}>
-                  <td>
-                    <span className="align-middle font-weight-bold">
-                      #{i + 1}
-                    </span>
-                  </td>
-                  <td>Nombre</td>
-                  <td>Slug</td>
-                  <td>Descripcion</td>
-                  <td>Keywords</td>
+            {categorias.map((cat, i) => (
+              <tr key={cat.categoriaId}>
+                <td>
+                  <span className="align-middle font-weight-bold">
+                    #{cat.categoriaId}
+                  </span>
+                </td>
+                <td>{cat.nombreCategoria}</td>
+                <td>{cat.slugCategoria}</td>
+                <td>{cat.descripcionCategoria}</td>
+                <td>{cat.KeywordsCategoria}</td>
 
-                  <td>
-                    <UncontrolledDropdown>
-                      <DropdownToggle
-                        className="icon-btn hide-arrow"
-                        color="transparent"
-                        size="sm"
-                        caret
+                <td>
+                  <UncontrolledDropdown>
+                    <DropdownToggle
+                      className="icon-btn hide-arrow"
+                      color="transparent"
+                      size="sm"
+                      caret
+                    >
+                      <MoreVertical size={15} />
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem
+                        className="w-100"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          setActiveCat(cat)
+                          onToggle()
+                        }}
                       >
-                        <MoreVertical size={15} />
-                      </DropdownToggle>
-                      <DropdownMenu right>
-                        <DropdownItem
-                          className="w-100"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            history.push(`/editar-propiedad/${i}`)
-                          }}
-                        >
-                          <Edit className="mr-50" size={15} />{' '}
-                          <span className="align-middle">Editar</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          className="w-100"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            HandleDelete()
-                          }}
-                        >
-                          <Trash className="mr-50" size={15} />
-                          <span className="align-middle">Borrar</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          href="/"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            onToggle()
-                          }}
-                        >
-                          <Image className="mr-50" size={15} />{' '}
-                          <span className="align-middle">Ver Imagenes</span>
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
-                  </td>
-                </tr>
-              ))}
+                        <Edit className="mr-50" size={15} />{' '}
+                        <span className="align-middle">Editar</span>
+                      </DropdownItem>
+                      <DropdownItem
+                        className="w-100"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          HandleDelete(cat.categoriaId)
+                        }}
+                      >
+                        <Trash className="mr-50" size={15} />
+                        <span className="align-middle">Borrar</span>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </TableBasic>
         <CustomPagination />
       </Card>
+      <Sidebar
+        {...{
+          open,
+          onToggle,
+          activeCat,
+          setActiveCat,
+          title: isEditing ? 'Nueva Categoria' : 'Editar Categoria',
+          contentClassName: 'p-0',
+          headerClassName: 'mb-2'
+        }}
+      />
     </>
   )
 }

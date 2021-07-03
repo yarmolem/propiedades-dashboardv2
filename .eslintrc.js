@@ -17,6 +17,7 @@ module.exports = {
   ignorePatterns: ['graphql.tsx', '**/generated/*.tsx'],
   rules: {
     'no-console': 'off',
+    'multiline-ternary': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
     // Best Practices
