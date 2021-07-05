@@ -1,8 +1,9 @@
 // ** React Imports
 import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-
+import { useApolloClient } from '@apollo/client'
 // ** Third Party Components
+import { toast } from 'react-toastify'
 import ReactPaginate from 'react-paginate'
 import { MoreVertical, Edit, Trash, Image } from 'react-feather'
 import {
@@ -19,8 +20,8 @@ import {
   Table as TableBasic,
   UncontrolledDropdown
 } from 'reactstrap'
-
 import Swal from 'sweetalert2'
+import Sidebar from './Sidebar'
 import withReactContent from 'sweetalert2-react-content'
 
 import useDisclosure from '../../utility/hooks/useDisclosure'
@@ -31,14 +32,12 @@ import '@styles/react/libs/react-select/_react-select.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
 
-import Sidebar from './Sidebar'
 import {
   useGetCategoriaQuery,
   useDeleteCategoriasMutation,
   useGetCategoriaSlugLazyQuery,
   GetCategoriaDocument as GET_ALL_CAT
 } from '../../generated/graphql'
-import { useApolloClient } from '@apollo/client'
 
 const MySwal = withReactContent(Swal)
 
@@ -55,9 +54,10 @@ const Categorys = () => {
   const [getCatBySlug] = useGetCategoriaSlugLazyQuery({
     fetchPolicy: 'network-only',
     onCompleted: ({ GetCategoriaSlug }) => {
-      console.log(GetCategoriaSlug)
       if (!GetCategoriaSlug) {
-        return console.log('No exite')
+        return toast.error('El slug ingresado no Existe.', {
+          position: 'bottom-center'
+        })
       }
 
       setActiveCat(GetCategoriaSlug)

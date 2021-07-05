@@ -22,12 +22,9 @@ const Imagenes = () => {
       </div>
 
       <div className="d-flex flex-wrap justify-content-center justify-content-md-start mb-2">
-        <div className="image-box">
+        {/* <div className="image-box">
           <img src={IMGPlaceholder} />
-        </div>
-        <div className="image-box">
-          <img src={IMGPlaceholder2} />
-        </div>
+        </div> */}
         <div onClick={toggleModal} className="btn-unstyled image-box">
           <Plus size={50} />
         </div>

@@ -26,8 +26,7 @@ import {
   UncontrolledDropdown,
   UncontrolledTooltip as Tooltip
 } from 'reactstrap'
-import Modal from './Modal'
-import useDisclosure from '../../utility/hooks/useDisclosure'
+import { useGetAllPropiedadesQuery } from '../../generated/graphql'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -41,92 +40,20 @@ import styles from './styles.module.css'
 
 const MySwal = withReactContent(Swal)
 
-// ** Table Header
-const CustomHeader = ({
-  toggleSidebar,
-  handlePerPage,
-  rowsPerPage,
-  handleFilter,
-  searchTerm
-}) => {
-  const history = useHistory()
-
-  return (
-    <div className="invoice-list-table-header w-100 mr-1 ml-50 mt-2 mb-75">
-      <Row>
-        <Col xl="6" className="d-flex align-items-center p-0">
-          <div className="d-flex align-items-center w-100">
-            <Label for="rows-per-page">Mostrar</Label>
-            <CustomInput
-              className="form-control mx-50"
-              type="select"
-              id="rows-per-page"
-              value={rowsPerPage}
-              onChange={handlePerPage}
-              style={{
-                width: '5rem',
-                padding: '0 0.8rem',
-                backgroundPosition:
-                  'calc(100% - 3px) 11px, calc(100% - 20px) 13px, 100% 0'
-              }}
-            >
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-            </CustomInput>
-            <Label for="rows-per-page">elementos</Label>
-          </div>
-        </Col>
-        <Col
-          xl="6"
-          className="d-flex align-items-sm-center justify-content-lg-end justify-content-start flex-lg-nowrap flex-wrap flex-sm-row flex-column pr-lg-1 p-0 mt-lg-0 mt-1"
-        >
-          <div className="d-flex align-items-center mb-sm-0 mb-1 mr-1">
-            <Label className="mb-0" for="search-invoice">
-              Buscar:
-            </Label>
-            <Input
-              id="search-invoice"
-              className="ml-50 w-100"
-              type="text"
-              value={searchTerm}
-              onChange={(e) => handleFilter(e.target.value)}
-            />
-          </div>
-          <Button.Ripple
-            onClick={() => history.push('/nueva-propiedad')}
-            color="primary"
-            outline
-            // onClick={toggleSidebar}
-          >
-            Nueva propiedad
-          </Button.Ripple>
-        </Col>
-      </Row>
-    </div>
-  )
-}
-
 const ListaPropiedades = () => {
   const history = useHistory()
 
-  // ** States
-  const { open, onToggle } = useDisclosure()
-  const [searchTerm, setSearchTerm] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [currentRole, setCurrentRole] = useState({
-    value: '',
-    label: 'Departamento'
+  const { data } = useGetAllPropiedadesQuery({
+    variables: {
+      page: 1,
+      estado: '',
+      destacado: '',
+      numberPaginate: 1
+    }
   })
-  const [currentPlan, setCurrentPlan] = useState({
-    value: '',
-    label: 'Provincia'
-  })
-  const [currentStatus, setCurrentStatus] = useState({
-    value: '',
-    label: 'Distrito'
-  })
+
+  const propiedades = data ? data.GetAllPropiedades.data : []
+  const nroPropiedades = data ? data.GetAllPropiedades.NroItems : 0
 
   // ** Handle Alert
   const HandleDelete = () => {
@@ -156,31 +83,6 @@ const ListaPropiedades = () => {
     })
   }
 
-  // ** Custom Pagination
-  const CustomPagination = () => {
-    const count = Number(Math.ceil(3 / rowsPerPage))
-
-    return (
-      <ReactPaginate
-        previousLabel={''}
-        nextLabel={''}
-        pageCount={count || 1}
-        activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={(page) => console.log(page)}
-        pageClassName={'page-item'}
-        nextLinkClassName={'page-link'}
-        pageLinkClassName={'page-link'}
-        nextClassName={'page-item next'}
-        previousLinkClassName={'page-link'}
-        previousClassName={'page-item prev'}
-        containerClassName={
-          'pagination react-paginate justify-content-end my-2 pr-1'
-        }
-      />
-    )
-  }
-
   return (
     <>
       <Card>
@@ -196,7 +98,7 @@ const ListaPropiedades = () => {
                 className="react-select"
                 classNamePrefix="select"
                 // options={roleOptions}
-                value={currentRole}
+                // value={currentRole}
                 onChange={(data) => console.log(data)}
               />
             </Col>
@@ -207,7 +109,7 @@ const ListaPropiedades = () => {
                 className="react-select"
                 classNamePrefix="select"
                 // options={planOptions}
-                value={currentPlan}
+                // value={currentPlan}
                 onChange={(data) => console.log(data)}
               />
             </Col>
@@ -218,7 +120,7 @@ const ListaPropiedades = () => {
                 className="react-select"
                 classNamePrefix="select"
                 // options={statusOptions}
-                value={currentStatus}
+                // value={currentStatus}
                 onChange={(data) => console.log(data)}
               />
             </Col>
@@ -228,7 +130,56 @@ const ListaPropiedades = () => {
 
       <Card>
         <div className="mx-3">
-          <CustomHeader />
+          <div className="invoice-list-table-header w-100 mr-1 ml-50 mt-2 mb-75">
+            <Row>
+              <Col xl="6" className="d-flex align-items-center p-0">
+                <div className="d-flex align-items-center w-100">
+                  <Label for="rows-per-page">Mostrar</Label>
+                  <CustomInput
+                    className="form-control mx-50"
+                    type="select"
+                    id="rows-per-page"
+                    style={{
+                      width: '5rem',
+                      padding: '0 0.8rem',
+                      backgroundPosition:
+                        'calc(100% - 3px) 11px, calc(100% - 20px) 13px, 100% 0'
+                    }}
+                  >
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </CustomInput>
+                  <Label for="rows-per-page">elementos</Label>
+                </div>
+              </Col>
+              <Col
+                xl="6"
+                className="d-flex align-items-sm-center justify-content-lg-end justify-content-start flex-lg-nowrap flex-wrap flex-sm-row flex-column pr-lg-1 p-0 mt-lg-0 mt-1"
+              >
+                <div className="d-flex align-items-center mb-sm-0 mb-1 mr-1">
+                  <Label className="mb-0" for="search-invoice">
+                    Buscar:
+                  </Label>
+                  <Input
+                    type="text"
+                    id="search-invoice"
+                    className="ml-50 w-100"
+                    // value={searchTerm}
+                    // onChange={(e) => handleFilter(e.target.value)}
+                  />
+                </div>
+                <Button.Ripple
+                  onClick={() => history.push('/nueva-propiedad')}
+                  color="primary"
+                  outline
+                  // onClick={toggleSidebar}
+                >
+                  Nueva propiedad
+                </Button.Ripple>
+              </Col>
+            </Row>
+          </div>
         </div>
         <TableBasic className="w-full" responsive>
           <thead>
@@ -246,116 +197,110 @@ const ListaPropiedades = () => {
             </tr>
           </thead>
           <tbody>
-            {Array(3)
-              .fill(null)
-              .map((_, i) => (
-                <tr key={i}>
-                  <td>
-                    <span className="align-middle font-weight-bold">
-                      #{i + 1}
-                    </span>
-                  </td>
-                  <td className="px-0">
-                    <div className={styles['cell-titulo']}>
-                      <p className="text-truncate">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing
-                        elit. Perferendis, molestias dolorum libero reiciendis
-                        quo fugiat in asperiores omnis nam tempora numquam, quas
-                        commodi? Harum officia sunt ullam veritatis velit
-                        nostrum.
-                      </p>
-                    </div>
-                  </td>
-                  <td className="text-center px-0">{i + 1}</td>
-                  <td className="text-center px-0">{i + 1}</td>
-                  <td className="text-center px-0">{i + 1}</td>
-                  <td className="text-center">
-                    <Badge color="success">Venta</Badge>
-                  </td>
-                  <td className={styles['cell-direccion']}>
-                    <p className="text-truncate" id="direccion">
-                      Av. Coronel Portillo, LT1, MZ2, km 5, #1076
+            {propiedades.map((_, i) => (
+              <tr key={i}>
+                <td>
+                  <span className="align-middle font-weight-bold">
+                    #{i + 1}
+                  </span>
+                </td>
+                <td className="px-0">
+                  <div className={styles['cell-titulo']}>
+                    <p className="text-truncate">
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                      Perferendis, molestias dolorum libero reiciendis quo
+                      fugiat in asperiores omnis nam tempora numquam, quas
+                      commodi? Harum officia sunt ullam veritatis velit nostrum.
                     </p>
-                    <Tooltip
-                      className="d-block d-xl-none"
-                      placement="bottom"
-                      target="direccion"
+                  </div>
+                </td>
+                <td className="text-center px-0">{i + 1}</td>
+                <td className="text-center px-0">{i + 1}</td>
+                <td className="text-center px-0">{i + 1}</td>
+                <td>
+                  <Badge color="success">Venta</Badge>
+                </td>
+                <td className={styles['cell-direccion']}>
+                  <p className="text-truncate" id="direccion">
+                    Av. Coronel Portillo, LT1, MZ2, km 5, #1076
+                  </p>
+                  <Tooltip
+                    className="d-block d-xl-none"
+                    placement="bottom"
+                    target="direccion"
+                  >
+                    Av. Coronel Portillo, LT1, MZ2, km 5, #1076
+                  </Tooltip>
+                </td>
+                <td className="text-center px-0">
+                  <CustomInput
+                    className="ml-2"
+                    type="switch"
+                    id={`primary-${i}`}
+                    name={`primary-${i}`}
+                    inline
+                    defaultChecked
+                  />
+                </td>
+                <td className="text-center px-0">
+                  <CustomInput
+                    className="ml-2"
+                    type="switch"
+                    id={`secundary-${i}`}
+                    name={`secundary-${i}`}
+                    inline
+                    defaultChecked
+                  />
+                </td>
+                <td>
+                  <UncontrolledDropdown>
+                    <DropdownToggle
+                      className="icon-btn hide-arrow"
+                      color="transparent"
+                      size="sm"
+                      caret
                     >
-                      Av. Coronel Portillo, LT1, MZ2, km 5, #1076
-                    </Tooltip>
-                  </td>
-                  <td className="text-center px-0">
-                    <CustomInput
-                      className="ml-2"
-                      type="switch"
-                      id={`primary-${i}`}
-                      name={`primary-${i}`}
-                      inline
-                      defaultChecked
-                    />
-                  </td>
-                  <td className="text-center px-0">
-                    <CustomInput
-                      className="ml-2"
-                      type="switch"
-                      id={`secundary-${i}`}
-                      name={`secundary-${i}`}
-                      inline
-                      defaultChecked
-                    />
-                  </td>
-                  <td>
-                    <UncontrolledDropdown>
-                      <DropdownToggle
-                        className="icon-btn hide-arrow"
-                        color="transparent"
-                        size="sm"
-                        caret
+                      <MoreVertical size={15} />
+                    </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem
+                        className="w-100"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          history.push(`/editar-propiedad/${i}`)
+                        }}
                       >
-                        <MoreVertical size={15} />
-                      </DropdownToggle>
-                      <DropdownMenu right>
-                        <DropdownItem
-                          className="w-100"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            history.push(`/editar-propiedad/${i}`)
-                          }}
-                        >
-                          <Edit className="mr-50" size={15} />{' '}
-                          <span className="align-middle">Editar</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          className="w-100"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            HandleDelete()
-                          }}
-                        >
-                          <Trash className="mr-50" size={15} />
-                          <span className="align-middle">Borrar</span>
-                        </DropdownItem>
-                        <DropdownItem
-                          href="/"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            onToggle()
-                          }}
-                        >
-                          <Image className="mr-50" size={15} />{' '}
-                          <span className="align-middle">Ver Imagenes</span>
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </UncontrolledDropdown>
-                  </td>
-                </tr>
-              ))}
+                        <Edit className="mr-50" size={15} />{' '}
+                        <span className="align-middle">Editar</span>
+                      </DropdownItem>
+                      <DropdownItem
+                        className="w-100"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          HandleDelete()
+                        }}
+                      >
+                        <Trash className="mr-50" size={15} />
+                        <span className="align-middle">Borrar</span>
+                      </DropdownItem>
+                      <DropdownItem
+                        href="/"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          onToggle()
+                        }}
+                      >
+                        <Image className="mr-50" size={15} />{' '}
+                        <span className="align-middle">Ver Imagenes</span>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </TableBasic>
-        <CustomPagination />
       </Card>
-
-      <Modal {...{ open, onToggle, id: 1 }} />
     </>
   )
 }

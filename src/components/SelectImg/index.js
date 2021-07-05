@@ -8,7 +8,11 @@ import useDisclosure from '../../utility/hooks/useDisclosure'
 import styles from './styles.module.css'
 import { useGetImagenesQuery } from '../../generated/graphql'
 
-const SelectImg = ({ value, onChange = () => {} }) => {
+const SelectImg = ({
+  value,
+  onChange = () => {},
+  className = styles['img_select']
+}) => {
   const [img, setImg] = useState({})
   const { open, onToggle } = useDisclosure()
   const { data, loading } = useGetImagenesQuery()
@@ -31,7 +35,7 @@ const SelectImg = ({ value, onChange = () => {} }) => {
 
   return (
     <>
-      <div onClick={onToggle} className={styles['img_select']}>
+      <div onClick={onToggle} className={className}>
         {loading ? <Spinner /> : img.url ? <img src={img.url} /> : <Plus />}
       </div>
       <ModalIMG {...{ open, onToggle, setImg }} />
