@@ -7,8 +7,8 @@ import { Button, ButtonGroup } from 'reactstrap'
 
 import useDisclosure from '../../../../utility/hooks/useDisclosure'
 
-const Imagenes = ({ stepper, state, setState, reset, handleCreatePropi }) => {
-  const [imgs, setImgs] = useState([])
+const Imagenes = ({ stepper, state, setState, reset, handleUpdatePropi }) => {
+  const [imgs, setImgs] = useState(state.galeria)
   const { open, onToggle } = useDisclosure()
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const Imagenes = ({ stepper, state, setState, reset, handleCreatePropi }) => {
       galeria: galeria.map(({ id }) => parseInt(id))
     }
     console.log(propMap)
-    await handleCreatePropi(propMap)
+    await handleUpdatePropi(propMap)
     reset()
     stepper.next()
   }
@@ -94,7 +94,7 @@ const Imagenes = ({ stepper, state, setState, reset, handleCreatePropi }) => {
         className="propiedad-step"
         onClick={handleNext}
       >
-        Crear propiedad
+        Guardar propiedad
       </Button.Ripple>
       <Modal {...{ open, onToggle, imgs, setImgs }} />
     </div>

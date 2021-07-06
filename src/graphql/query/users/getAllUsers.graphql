@@ -9,6 +9,9 @@ query GetAllUsers($tipoUsuario: Int, $estado: String) {
     nroDocumento
     fechaNacimiento
     email
+    whatsapp
+    facebook
+    celular
     foto {
       id
       descripcion

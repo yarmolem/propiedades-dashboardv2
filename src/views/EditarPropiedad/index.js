@@ -16,8 +16,8 @@ import { Home, Image, FilePlus } from 'react-feather'
 // ** Styles
 import '@styles/base/pages/app-ecommerce.scss'
 import {
-  useCrearPropiedadesMutation,
-  GetAllPropiedadesDocument as GET_ALL_PROPI
+  GetAllPropiedadesDocument as GET_ALL_PROPI,
+  useUpdatePropiedadesMutation
 } from '../../generated/graphql'
 
 const initialValues = {
@@ -67,24 +67,24 @@ const initialValues = {
   }
 }
 
-const NuevaPropiedad = () => {
+const EditarPropiedad = ({ location }) => {
   // ** Ref & State
   const ref = useRef(null)
   const [stepper, setStepper] = useState(null)
-  const [state, setState] = useState(initialValues)
-  const [propiedadId, setPropiedadId] = useState(17)
+  const [state, setState] = useState(location.state)
+  const [propiedadId, setPropiedadId] = useState(null)
 
-  const [createProp] = useCrearPropiedadesMutation({
+  const [updatePropi] = useUpdatePropiedadesMutation({
     onError: ({ graphQLErrors }) => console.log(graphQLErrors),
-    onCompleted: ({ CrearPropiedades }) => {
-      if (CrearPropiedades) {
-        setPropiedadId(CrearPropiedades.propiedadId)
+    onCompleted: ({ UpdatePropiedades }) => {
+      if (UpdatePropiedades) {
+        setPropiedadId(UpdatePropiedades.propiedadId)
       }
     }
   })
 
-  const handleCreatePropi = async (propiedad) => {
-    await createProp({
+  const handleUpdatePropi = async (propiedad) => {
+    await updatePropi({
       variables: { input: propiedad },
       update: (cache, { data }) => {
         const { GetAllPropiedades } = cache.readQuery({
@@ -108,7 +108,13 @@ const NuevaPropiedad = () => {
           data: {
             GetAllPropiedades: {
               ...GetAllPropiedades,
-              data: [data.CrearPropiedades, ...GetAllPropiedades.data]
+              data: GetAllPropiedades.data.map((p) => {
+                /* eslint-disable */
+                return p.propiedadId === data.UpdatePropiedades.propiedadId
+                  ? data.UpdatePropiedades
+                  : p
+                /* eslint-enable */
+              })
             }
           }
         })
@@ -133,7 +139,7 @@ const NuevaPropiedad = () => {
       subtitle: 'Imagenes de la propiedad',
       icon: <Image size={18} />,
       content: (
-        <Imagenes {...{ stepper, state, setState, reset, handleCreatePropi }} />
+        <Imagenes {...{ stepper, state, setState, reset, handleUpdatePropi }} />
       )
     },
     {
@@ -150,14 +156,12 @@ const NuevaPropiedad = () => {
       <Wizard
         ref={ref}
         steps={steps}
+        options={{ linear: false }}
         className="checkout-tab-steps"
         instance={(el) => setStepper(el)}
-        options={{
-          linear: false
-        }}
       />
     </Fragment>
   )
 }
 
-export default NuevaPropiedad
+export default EditarPropiedad

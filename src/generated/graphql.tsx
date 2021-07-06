@@ -362,11 +362,10 @@ export type Query = {
   GetAllUsers?: Maybe<Array<User>>;
   GetCategoria?: Maybe<Array<Maybe<Categorias>>>;
   GetCategoriaSlug?: Maybe<Categorias>;
-  GetAllPlanos?: Maybe<GetPlanos>;
   GetIdPlanos?: Maybe<Planos>;
   GetAllPropiedades?: Maybe<GetPropiedades>;
   GetAsesorPropiedades?: Maybe<GetPropiedades>;
-  GetIdPropiedades?: Maybe<Propiedades>;
+  GetSlugPropiedades?: Maybe<Propiedades>;
 };
 
 
@@ -391,12 +390,6 @@ export type QueryGetCategoriaSlugArgs = {
 };
 
 
-export type QueryGetAllPlanosArgs = {
-  numberPaginate?: Maybe<Scalars['Int']>;
-  page?: Maybe<Scalars['Int']>;
-};
-
-
 export type QueryGetIdPlanosArgs = {
   planoId?: Maybe<Scalars['Int']>;
 };
@@ -416,7 +409,7 @@ export type QueryGetAsesorPropiedadesArgs = {
 };
 
 
-export type QueryGetIdPropiedadesArgs = {
+export type QueryGetSlugPropiedadesArgs = {
   slug?: Maybe<Scalars['String']>;
 };
 
@@ -453,6 +446,9 @@ export type User = {
   foto?: Maybe<Imagenes>;
   estado?: Maybe<Scalars['Int']>;
   apiToken?: Maybe<Scalars['String']>;
+  facebook?: Maybe<Scalars['String']>;
+  whatsapp?: Maybe<Scalars['String']>;
+  celular?: Maybe<Scalars['String']>;
   Departamento?: Maybe<Departamento>;
   Provincia?: Maybe<Provincia>;
   Distrito?: Maybe<Distrito>;
@@ -474,6 +470,9 @@ export type UserInput = {
   ProvCodi?: Maybe<Scalars['Int']>;
   DistCodi?: Maybe<Scalars['Int']>;
   password?: Maybe<Scalars['String']>;
+  facebook?: Maybe<Scalars['String']>;
+  whatsapp?: Maybe<Scalars['String']>;
+  celular?: Maybe<Scalars['String']>;
 };
 
 export type LoginInput = {
@@ -715,6 +714,64 @@ export type DeletePropiedadesMutation = (
   & Pick<Mutation, 'DeletePropiedades'>
 );
 
+export type UpdatePropiedadesMutationVariables = Exact<{
+  input: PropiedadesInput;
+}>;
+
+
+export type UpdatePropiedadesMutation = (
+  { __typename?: 'Mutation' }
+  & { UpdatePropiedades?: Maybe<(
+    { __typename?: 'Propiedades' }
+    & Pick<Propiedades, 'propiedadId' | 'titulo' | 'slug' | 'tipoContrato' | 'descripcionCorta' | 'descripcionCompleta' | 'video' | 'estado' | 'destacado' | 'lat' | 'log' | 'cuartos' | 'banios' | 'pisos' | 'dimensiones' | 'antiguedad' | 'areaConstruida' | 'ambientes' | 'direccion'>
+    & { fotoPrincipal?: Maybe<(
+      { __typename?: 'Imagenes' }
+      & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+    )>, fotoSecundaria?: Maybe<(
+      { __typename?: 'Imagenes' }
+      & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+    )>, galeria?: Maybe<Array<(
+      { __typename?: 'Imagenes' }
+      & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+    )>>, Departamento?: Maybe<(
+      { __typename?: 'Departamento' }
+      & Pick<Departamento, 'DeparCodi' | 'DeparNom'>
+    )>, Provincia?: Maybe<(
+      { __typename?: 'Provincia' }
+      & Pick<Provincia, 'ProvCodi' | 'ProvNom' | 'DeparCodi'>
+    )>, Distrito?: Maybe<(
+      { __typename?: 'Distrito' }
+      & Pick<Distrito, 'DistCodi' | 'DistNom' | 'ProvCodi' | 'destacado'>
+    )>, Categorias?: Maybe<(
+      { __typename?: 'Categorias' }
+      & Pick<Categorias, 'categoriaId' | 'slugCategoria' | 'nombreCategoria' | 'descripcionCategoria' | 'KeywordsCategoria'>
+      & { ImagenPrincipal?: Maybe<(
+        { __typename?: 'Imagenes' }
+        & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+      )>, ImagenSecundaria?: Maybe<(
+        { __typename?: 'Imagenes' }
+        & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+      )> }
+    )>, Asesor?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'userId' | 'alias' | 'tipoUsuario' | 'nombres' | 'apellidos' | 'tipoDocumento' | 'nroDocumento' | 'fechaNacimiento' | 'email' | 'estado' | 'apiToken'>
+      & { foto?: Maybe<(
+        { __typename?: 'Imagenes' }
+        & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+      )>, Departamento?: Maybe<(
+        { __typename?: 'Departamento' }
+        & Pick<Departamento, 'DeparCodi' | 'DeparNom'>
+      )>, Provincia?: Maybe<(
+        { __typename?: 'Provincia' }
+        & Pick<Provincia, 'ProvCodi' | 'ProvNom' | 'DeparCodi'>
+      )>, Distrito?: Maybe<(
+        { __typename?: 'Distrito' }
+        & Pick<Distrito, 'DistCodi' | 'DistNom' | 'ProvCodi' | 'destacado' | 'estado'>
+      )> }
+    )> }
+  )> }
+);
+
 export type CrearUsuarioMutationVariables = Exact<{
   input: UserInput;
 }>;
@@ -724,7 +781,7 @@ export type CrearUsuarioMutation = (
   { __typename?: 'Mutation' }
   & { CrearUsuario?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'userId' | 'alias' | 'tipoUsuario' | 'nombres' | 'apellidos' | 'tipoDocumento' | 'nroDocumento' | 'fechaNacimiento' | 'email' | 'estado' | 'apiToken'>
+    & Pick<User, 'userId' | 'alias' | 'tipoUsuario' | 'nombres' | 'apellidos' | 'tipoDocumento' | 'nroDocumento' | 'fechaNacimiento' | 'email' | 'whatsapp' | 'facebook' | 'celular' | 'estado' | 'apiToken'>
     & { foto?: Maybe<(
       { __typename?: 'Imagenes' }
       & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
@@ -760,7 +817,7 @@ export type UpdateUsuarioMutation = (
   { __typename?: 'Mutation' }
   & { UpdateUsuario?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'userId' | 'alias' | 'tipoUsuario' | 'nombres' | 'apellidos' | 'tipoDocumento' | 'nroDocumento' | 'fechaNacimiento' | 'email' | 'estado' | 'apiToken'>
+    & Pick<User, 'userId' | 'alias' | 'tipoUsuario' | 'nombres' | 'apellidos' | 'tipoDocumento' | 'nroDocumento' | 'fechaNacimiento' | 'email' | 'whatsapp' | 'facebook' | 'celular' | 'estado' | 'apiToken'>
     & { foto?: Maybe<(
       { __typename?: 'Imagenes' }
       & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
@@ -928,16 +985,16 @@ export type GetAllPropiedadesQuery = (
   )> }
 );
 
-export type GetIdPropiedadesQueryVariables = Exact<{
+export type GetSlugPropiedadesQueryVariables = Exact<{
   slug?: Maybe<Scalars['String']>;
 }>;
 
 
-export type GetIdPropiedadesQuery = (
+export type GetSlugPropiedadesQuery = (
   { __typename?: 'Query' }
-  & { GetIdPropiedades?: Maybe<(
+  & { GetSlugPropiedades?: Maybe<(
     { __typename?: 'Propiedades' }
-    & Pick<Propiedades, 'propiedadId' | 'titulo' | 'slug' | 'tipoContrato' | 'descripcionCorta' | 'descripcionCompleta' | 'video' | 'estado' | 'destacado' | 'lat' | 'log' | 'cuartos' | 'banios' | 'pisos' | 'dimensiones' | 'antiguedad' | 'areaConstruida' | 'ambientes' | 'direccion'>
+    & Pick<Propiedades, 'slug' | 'titulo' | 'propiedadId' | 'tipoContrato' | 'descripcionCorta' | 'descripcionCompleta' | 'video' | 'estado' | 'destacado' | 'lat' | 'log' | 'cuartos' | 'banios' | 'pisos' | 'dimensiones' | 'antiguedad' | 'areaConstruida' | 'ambientes' | 'direccion'>
     & { fotoPrincipal?: Maybe<(
       { __typename?: 'Imagenes' }
       & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
@@ -996,7 +1053,7 @@ export type GetAllUsersQuery = (
   { __typename?: 'Query' }
   & { GetAllUsers?: Maybe<Array<(
     { __typename?: 'User' }
-    & Pick<User, 'userId' | 'alias' | 'tipoUsuario' | 'nombres' | 'apellidos' | 'tipoDocumento' | 'nroDocumento' | 'fechaNacimiento' | 'email' | 'estado' | 'apiToken'>
+    & Pick<User, 'userId' | 'alias' | 'tipoUsuario' | 'nombres' | 'apellidos' | 'tipoDocumento' | 'nroDocumento' | 'fechaNacimiento' | 'email' | 'whatsapp' | 'facebook' | 'celular' | 'estado' | 'apiToken'>
     & { foto?: Maybe<(
       { __typename?: 'Imagenes' }
       & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
@@ -1619,6 +1676,138 @@ export function useDeletePropiedadesMutation(baseOptions?: Apollo.MutationHookOp
 export type DeletePropiedadesMutationHookResult = ReturnType<typeof useDeletePropiedadesMutation>;
 export type DeletePropiedadesMutationResult = Apollo.MutationResult<DeletePropiedadesMutation>;
 export type DeletePropiedadesMutationOptions = Apollo.BaseMutationOptions<DeletePropiedadesMutation, DeletePropiedadesMutationVariables>;
+export const UpdatePropiedadesDocument = gql`
+    mutation UpdatePropiedades($input: PropiedadesInput!) {
+  UpdatePropiedades(input: $input) {
+    propiedadId
+    titulo
+    slug
+    tipoContrato
+    descripcionCorta
+    descripcionCompleta
+    video
+    estado
+    destacado
+    fotoPrincipal {
+      id
+      descripcion
+      url
+    }
+    fotoSecundaria {
+      id
+      descripcion
+      url
+    }
+    galeria {
+      id
+      descripcion
+      url
+    }
+    lat
+    log
+    cuartos
+    banios
+    pisos
+    dimensiones
+    antiguedad
+    areaConstruida
+    ambientes
+    direccion
+    Departamento {
+      DeparCodi
+      DeparNom
+    }
+    Provincia {
+      ProvCodi
+      ProvNom
+      DeparCodi
+    }
+    Distrito {
+      DistCodi
+      DistNom
+      ProvCodi
+      destacado
+    }
+    Categorias {
+      categoriaId
+      slugCategoria
+      nombreCategoria
+      descripcionCategoria
+      ImagenPrincipal {
+        id
+        descripcion
+        url
+      }
+      ImagenSecundaria {
+        id
+        descripcion
+        url
+      }
+      KeywordsCategoria
+    }
+    Asesor {
+      userId
+      alias
+      tipoUsuario
+      nombres
+      apellidos
+      tipoDocumento
+      nroDocumento
+      fechaNacimiento
+      email
+      foto {
+        id
+        descripcion
+        url
+      }
+      estado
+      apiToken
+      Departamento {
+        DeparCodi
+        DeparNom
+      }
+      Provincia {
+        ProvCodi
+        ProvNom
+        DeparCodi
+      }
+      Distrito {
+        DistCodi
+        DistNom
+        ProvCodi
+        destacado
+        estado
+      }
+    }
+  }
+}
+    `;
+export type UpdatePropiedadesMutationFn = Apollo.MutationFunction<UpdatePropiedadesMutation, UpdatePropiedadesMutationVariables>;
+
+/**
+ * __useUpdatePropiedadesMutation__
+ *
+ * To run a mutation, you first call `useUpdatePropiedadesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePropiedadesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePropiedadesMutation, { data, loading, error }] = useUpdatePropiedadesMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdatePropiedadesMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePropiedadesMutation, UpdatePropiedadesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePropiedadesMutation, UpdatePropiedadesMutationVariables>(UpdatePropiedadesDocument, options);
+      }
+export type UpdatePropiedadesMutationHookResult = ReturnType<typeof useUpdatePropiedadesMutation>;
+export type UpdatePropiedadesMutationResult = Apollo.MutationResult<UpdatePropiedadesMutation>;
+export type UpdatePropiedadesMutationOptions = Apollo.BaseMutationOptions<UpdatePropiedadesMutation, UpdatePropiedadesMutationVariables>;
 export const CrearUsuarioDocument = gql`
     mutation CrearUsuario($input: UserInput!) {
   CrearUsuario(input: $input) {
@@ -1631,6 +1820,9 @@ export const CrearUsuarioDocument = gql`
     nroDocumento
     fechaNacimiento
     email
+    whatsapp
+    facebook
+    celular
     foto {
       id
       descripcion
@@ -1725,6 +1917,9 @@ export const UpdateUsuarioDocument = gql`
     nroDocumento
     fechaNacimiento
     email
+    whatsapp
+    facebook
+    celular
     foto {
       id
       descripcion
@@ -2164,12 +2359,12 @@ export function useGetAllPropiedadesLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetAllPropiedadesQueryHookResult = ReturnType<typeof useGetAllPropiedadesQuery>;
 export type GetAllPropiedadesLazyQueryHookResult = ReturnType<typeof useGetAllPropiedadesLazyQuery>;
 export type GetAllPropiedadesQueryResult = Apollo.QueryResult<GetAllPropiedadesQuery, GetAllPropiedadesQueryVariables>;
-export const GetIdPropiedadesDocument = gql`
-    query GetIdPropiedades($slug: String) {
-  GetIdPropiedades(slug: $slug) {
-    propiedadId
-    titulo
+export const GetSlugPropiedadesDocument = gql`
+    query GetSlugPropiedades($slug: String) {
+  GetSlugPropiedades(slug: $slug) {
     slug
+    titulo
+    propiedadId
     tipoContrato
     descripcionCorta
     descripcionCompleta
@@ -2272,32 +2467,32 @@ export const GetIdPropiedadesDocument = gql`
     `;
 
 /**
- * __useGetIdPropiedadesQuery__
+ * __useGetSlugPropiedadesQuery__
  *
- * To run a query within a React component, call `useGetIdPropiedadesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetIdPropiedadesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetSlugPropiedadesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSlugPropiedadesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetIdPropiedadesQuery({
+ * const { data, loading, error } = useGetSlugPropiedadesQuery({
  *   variables: {
  *      slug: // value for 'slug'
  *   },
  * });
  */
-export function useGetIdPropiedadesQuery(baseOptions?: Apollo.QueryHookOptions<GetIdPropiedadesQuery, GetIdPropiedadesQueryVariables>) {
+export function useGetSlugPropiedadesQuery(baseOptions?: Apollo.QueryHookOptions<GetSlugPropiedadesQuery, GetSlugPropiedadesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetIdPropiedadesQuery, GetIdPropiedadesQueryVariables>(GetIdPropiedadesDocument, options);
+        return Apollo.useQuery<GetSlugPropiedadesQuery, GetSlugPropiedadesQueryVariables>(GetSlugPropiedadesDocument, options);
       }
-export function useGetIdPropiedadesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetIdPropiedadesQuery, GetIdPropiedadesQueryVariables>) {
+export function useGetSlugPropiedadesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSlugPropiedadesQuery, GetSlugPropiedadesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetIdPropiedadesQuery, GetIdPropiedadesQueryVariables>(GetIdPropiedadesDocument, options);
+          return Apollo.useLazyQuery<GetSlugPropiedadesQuery, GetSlugPropiedadesQueryVariables>(GetSlugPropiedadesDocument, options);
         }
-export type GetIdPropiedadesQueryHookResult = ReturnType<typeof useGetIdPropiedadesQuery>;
-export type GetIdPropiedadesLazyQueryHookResult = ReturnType<typeof useGetIdPropiedadesLazyQuery>;
-export type GetIdPropiedadesQueryResult = Apollo.QueryResult<GetIdPropiedadesQuery, GetIdPropiedadesQueryVariables>;
+export type GetSlugPropiedadesQueryHookResult = ReturnType<typeof useGetSlugPropiedadesQuery>;
+export type GetSlugPropiedadesLazyQueryHookResult = ReturnType<typeof useGetSlugPropiedadesLazyQuery>;
+export type GetSlugPropiedadesQueryResult = Apollo.QueryResult<GetSlugPropiedadesQuery, GetSlugPropiedadesQueryVariables>;
 export const GetAllUsersDocument = gql`
     query GetAllUsers($tipoUsuario: Int, $estado: String) {
   GetAllUsers(tipoUsuario: $tipoUsuario, estado: $estado) {
@@ -2310,6 +2505,9 @@ export const GetAllUsersDocument = gql`
     nroDocumento
     fechaNacimiento
     email
+    whatsapp
+    facebook
+    celular
     foto {
       id
       descripcion

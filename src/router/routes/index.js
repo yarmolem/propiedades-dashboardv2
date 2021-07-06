@@ -50,7 +50,7 @@ const Routes = [
   },
   {
     path: '/editar-propiedad/:id',
-    component: lazy(() => import('../../views/NuevaPropiedad'))
+    component: lazy(() => import('../../views/EditarPropiedad'))
   },
   {
     path: '/categorias',

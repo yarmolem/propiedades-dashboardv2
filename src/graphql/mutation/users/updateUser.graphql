@@ -9,6 +9,9 @@ mutation UpdateUsuario($input: UserInput!) {
     nroDocumento
     fechaNacimiento
     email
+    whatsapp
+    facebook
+    celular
     foto {
       id
       descripcion

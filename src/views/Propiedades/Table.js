@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 // ** Third Party Components
 import Select from 'react-select'
 import { selectThemeColors } from '@utils'
+import { useApolloClient } from '@apollo/client'
 import ReactPaginate from 'react-paginate'
 import { MoreVertical, Edit, Trash, Image } from 'react-feather'
 import {
@@ -26,10 +27,18 @@ import {
   UncontrolledDropdown,
   UncontrolledTooltip as Tooltip
 } from 'reactstrap'
-import { useGetAllPropiedadesQuery } from '../../generated/graphql'
+import {
+  GetAllPropiedadesDocument as GET_ALL_PROPI,
+  useGetAllPropiedadesQuery,
+  useDeletePropiedadesMutation,
+  useUpdatePropiedadesMutation,
+  useGetSlugPropiedadesLazyQuery
+} from '../../generated/graphql'
 
 import Swal from 'sweetalert2'
+import { toast } from 'react-toastify'
 import withReactContent from 'sweetalert2-react-content'
+import { propiEditMap } from '../../utility/propiEditMap'
 
 // ** Styles
 import 'animate.css/animate.css'
@@ -42,21 +51,174 @@ const MySwal = withReactContent(Swal)
 
 const ListaPropiedades = () => {
   const history = useHistory()
+  const cache = useApolloClient()
+  const [searchSlug, setSearchSlug] = useState('')
+
+  const [getPropiBySlug] = useGetSlugPropiedadesLazyQuery({
+    fetchPolicy: 'network-only',
+    onError: ({ graphQLErrors }) => console.log(graphQLErrors[0].debugMessage),
+    onCompleted: ({ GetSlugPropiedades }) => {
+      console.log(GetSlugPropiedades)
+      if (!GetSlugPropiedades) {
+        return toast.error('El slug ingresado no Existe.', {
+          position: 'bottom-center'
+        })
+      }
+      const id = GetSlugPropiedades.propiedadId
+      history.push(`/editar-propiedad/${id}`, propiEditMap(GetSlugPropiedades))
+    }
+  })
+
+  const [deletePropi] = useDeletePropiedadesMutation({
+    onError: ({ graphQLErrors }) => console.log(graphQLErrors),
+    onCompleted: ({ DeletePropiedades }) => console.log(DeletePropiedades)
+  })
+
+  const [updatePropi] = useUpdatePropiedadesMutation({
+    onError: ({ graphQLErrors }) => console.log(graphQLErrors[0].message),
+    onCompleted: ({ UpdatePropiedades }) => console.log(UpdatePropiedades)
+  })
 
   const { data } = useGetAllPropiedadesQuery({
     variables: {
       page: 1,
       estado: '',
       destacado: '',
-      numberPaginate: 1
+      numberPaginate: 10
     }
   })
 
   const propiedades = data ? data.GetAllPropiedades.data : []
   const nroPropiedades = data ? data.GetAllPropiedades.NroItems : 0
 
+  const searchPropi = () => {
+    getPropiBySlug({ variables: { slug: searchSlug } })
+    setSearchSlug('')
+  }
+
+  const handleChangeEstado = async ({ estado, ...p }, checked) => {
+    const { GetAllPropiedades } = cache.readQuery({
+      query: GET_ALL_PROPI,
+      variables: {
+        page: 1,
+        estado: '',
+        destacado: '',
+        numberPaginate: 10
+      }
+    })
+
+    cache.writeQuery({
+      query: GET_ALL_PROPI,
+      variables: {
+        page: 1,
+        estado: '',
+        destacado: '',
+        numberPaginate: 10
+      },
+      data: {
+        GetAllPropiedades: {
+          ...GetAllPropiedades,
+          data: GetAllPropiedades.data.map((propi) => {
+            /* eslint-disable*/
+            return propi.propiedadId === p.propiedadId
+              ? { ...p, estado: checked ? 1 : 0 }
+              : propi
+            /* eslint-enable */
+          })
+        }
+      }
+    })
+
+    const {
+      Asesor,
+      galeria,
+      Distrito,
+      Provincia,
+      Categorias,
+      Departamento,
+      fotoPrincipal,
+      fotoSecundaria,
+      ...rest
+    } = p
+
+    const input = {
+      ...rest,
+      estado: checked ? 1 : 0,
+      asesorId: Asesor.userId,
+      DistCodi: Distrito.DistCodi,
+      ProvCodi: Provincia.ProvCodi,
+      fotoPrincipal: fotoSecundaria.id,
+      DeparCodi: Departamento.DeparCodi,
+      fotoSecundaria: fotoSecundaria.id,
+      categoriaId: Categorias.categoriaId,
+      galeria: galeria.map(({ id }) => parseInt(id))
+    }
+
+    await updatePropi({ variables: { input } })
+  }
+  const handleChangeDestacado = async ({ destacado, ...p }, checked) => {
+    const { GetAllPropiedades } = cache.readQuery({
+      query: GET_ALL_PROPI,
+      variables: {
+        page: 1,
+        estado: '',
+        destacado: '',
+        numberPaginate: 10
+      }
+    })
+
+    cache.writeQuery({
+      query: GET_ALL_PROPI,
+      variables: {
+        page: 1,
+        estado: '',
+        destacado: '',
+        numberPaginate: 10
+      },
+      data: {
+        GetAllPropiedades: {
+          ...GetAllPropiedades,
+          data: GetAllPropiedades.data.map((propi) => {
+            /* eslint-disable*/
+            return propi.propiedadId === p.propiedadId
+              ? { ...p, destacado: checked ? 1 : 0 }
+              : propi
+            /* eslint-enable */
+          })
+        }
+      }
+    })
+
+    const {
+      Asesor,
+      galeria,
+      Distrito,
+      Provincia,
+      Categorias,
+      Departamento,
+      fotoPrincipal,
+      fotoSecundaria,
+      ...rest
+    } = p
+
+    const input = {
+      ...rest,
+      destacado: checked ? 1 : 0,
+      asesorId: Asesor.userId,
+      DistCodi: Distrito.DistCodi,
+      ProvCodi: Provincia.ProvCodi,
+      fotoPrincipal: fotoSecundaria.id,
+      DeparCodi: Departamento.DeparCodi,
+      fotoSecundaria: fotoSecundaria.id,
+      categoriaId: Categorias.categoriaId,
+      galeria: galeria.map(({ id }) => parseInt(id))
+    }
+
+    await updatePropi({ variables: { input } })
+  }
+
   // ** Handle Alert
-  const HandleDelete = () => {
+  const HandleDelete = (propiedadId) => {
     return MySwal.fire({
       title: '¿Estas seguro?',
       text: 'No podras recuperar esta información!',
@@ -69,8 +231,10 @@ const ListaPropiedades = () => {
         cancelButton: 'btn btn-outline-danger ml-1'
       },
       buttonsStyling: false
-    }).then(function (result) {
+    }).then(async (result) => {
       if (result.value) {
+        await deletePropi({ variables: { input: { propiedadId } } })
+        refetch()
         MySwal.fire({
           icon: 'success',
           title: 'Eliminada!',
@@ -165,8 +329,14 @@ const ListaPropiedades = () => {
                     type="text"
                     id="search-invoice"
                     className="ml-50 w-100"
-                    // value={searchTerm}
-                    // onChange={(e) => handleFilter(e.target.value)}
+                    value={searchSlug}
+                    onKeyPress={({ code }) => {
+                      if (code === 'Enter' || code === 'NumpadEnter') {
+                        searchPropi()
+                        setSearchSlug('')
+                      }
+                    }}
+                    onChange={({ target: { value } }) => setSearchSlug(value)}
                   />
                 </div>
                 <Button.Ripple
@@ -186,6 +356,7 @@ const ListaPropiedades = () => {
             <tr>
               <th>ID</th>
               <th className="px-0">Titulo</th>
+              <th className="px-0">Slug</th>
               <th className="px-1 px-xl-0 text-center">Baños</th>
               <th className="px-1 px-xl-0 text-center">Cuartos</th>
               <th className="px-1 px-xl-0 text-center">Pisos</th>
@@ -197,59 +368,67 @@ const ListaPropiedades = () => {
             </tr>
           </thead>
           <tbody>
-            {propiedades.map((_, i) => (
-              <tr key={i}>
+            {propiedades.map((p, i) => (
+              <tr key={p.propiedadId}>
                 <td>
                   <span className="align-middle font-weight-bold">
-                    #{i + 1}
+                    #{p.propiedadId}
                   </span>
                 </td>
                 <td className="px-0">
                   <div className={styles['cell-titulo']}>
-                    <p className="text-truncate">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Perferendis, molestias dolorum libero reiciendis quo
-                      fugiat in asperiores omnis nam tempora numquam, quas
-                      commodi? Harum officia sunt ullam veritatis velit nostrum.
-                    </p>
+                    <p className="text-truncate">{p.titulo}</p>
                   </div>
                 </td>
-                <td className="text-center px-0">{i + 1}</td>
-                <td className="text-center px-0">{i + 1}</td>
-                <td className="text-center px-0">{i + 1}</td>
+                <td className="px-0">
+                  <div className={styles['cell-titulo']}>
+                    <p className="text-truncate">{p.slug}</p>
+                  </div>
+                </td>
+                <td className="text-center px-0">{p.banios}</td>
+                <td className="text-center px-0">{p.cuartos}</td>
+                <td className="text-center px-0">{p.pisos}</td>
                 <td>
-                  <Badge color="success">Venta</Badge>
+                  <Badge color="success">
+                    {p.tipoContrato === 1 ? 'Venta' : 'Alquiler'}
+                  </Badge>
                 </td>
                 <td className={styles['cell-direccion']}>
                   <p className="text-truncate" id="direccion">
-                    Av. Coronel Portillo, LT1, MZ2, km 5, #1076
+                    {p.direccion}
                   </p>
                   <Tooltip
                     className="d-block d-xl-none"
                     placement="bottom"
                     target="direccion"
                   >
-                    Av. Coronel Portillo, LT1, MZ2, km 5, #1076
+                    {p.direccion}
                   </Tooltip>
                 </td>
                 <td className="text-center px-0">
                   <CustomInput
-                    className="ml-2"
-                    type="switch"
-                    id={`primary-${i}`}
-                    name={`primary-${i}`}
                     inline
-                    defaultChecked
+                    type="switch"
+                    name="estado"
+                    className="ml-2"
+                    id={`primary-${i}`}
+                    checked={p.estado === 1}
+                    onChange={({ target: { checked } }) => {
+                      handleChangeEstado(p, checked)
+                    }}
                   />
                 </td>
                 <td className="text-center px-0">
                   <CustomInput
-                    className="ml-2"
-                    type="switch"
-                    id={`secundary-${i}`}
-                    name={`secundary-${i}`}
                     inline
-                    defaultChecked
+                    type="switch"
+                    className="ml-2"
+                    id={`secundary-${i}`}
+                    name="primary"
+                    checked={p.destacado === 1}
+                    onChange={({ target: { checked } }) => {
+                      handleChangeDestacado(p, checked)
+                    }}
                   />
                 </td>
                 <td>
@@ -267,7 +446,10 @@ const ListaPropiedades = () => {
                         className="w-100"
                         onClick={(e) => {
                           e.preventDefault()
-                          history.push(`/editar-propiedad/${i}`)
+                          history.push(
+                            `/editar-propiedad/${p.propiedadId}`,
+                            propiEditMap(p)
+                          )
                         }}
                       >
                         <Edit className="mr-50" size={15} />{' '}
@@ -277,7 +459,7 @@ const ListaPropiedades = () => {
                         className="w-100"
                         onClick={(e) => {
                           e.preventDefault()
-                          HandleDelete()
+                          HandleDelete(p.propiedadId)
                         }}
                       >
                         <Trash className="mr-50" size={15} />

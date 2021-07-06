@@ -1,8 +1,8 @@
-query GetIdPropiedades($slug: String) {
-  GetIdPropiedades(slug: $slug) {
-    propiedadId
-    titulo
+query GetSlugPropiedades($slug: String) {
+  GetSlugPropiedades(slug: $slug) {
     slug
+    titulo
+    propiedadId
     tipoContrato
     descripcionCorta
     descripcionCompleta

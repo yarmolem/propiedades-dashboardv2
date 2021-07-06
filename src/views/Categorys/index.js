@@ -87,7 +87,6 @@ const Categorys = () => {
   })
 
   const searchCategory = () => {
-    console.log(searchTerm)
     getCatBySlug({
       variables: { slugCategoria: searchTerm }
     })

@@ -10,7 +10,7 @@ import Carrousel from './Carrousel'
 
 import styles from './styles.module.css'
 
-const Modal = ({ open, onToggle, id }) => {
+const Modal = ({ propiedad, open, onToggle, id }) => {
   const handleCloseModal = () => {
     onToggle()
   }
@@ -28,11 +28,6 @@ const Modal = ({ open, onToggle, id }) => {
       <ModalBody>
         <Carrousel />
       </ModalBody>
-      {/* <ModalFooter>
-        <Button color="danger" outline onClick={handleCloseModal}>
-          Salir
-        </Button>
-      </ModalFooter> */}
     </ModalForm>
   )
 }

@@ -52,6 +52,9 @@ const initialValues = {
     label: 'Seleccione departamento'
   },
   password: '',
+  whatsapp: '',
+  facebook: '',
+  celular: '',
   confirmPassword: '',
   fechaNacimiento: ''
 }
@@ -65,7 +68,10 @@ const NuevoAsesor = ({ history }) => {
   })
 
   const [createUser] = useCrearUsuarioMutation({
-    onError: () => toast.success('Ha ocurrido un error'),
+    onError: (err) => {
+      console.log(err)
+      toast.success('Ha ocurrido un error')
+    },
     onCompleted: () => {
       toast.success('Usuario creado con exito¡¡¡')
       history.push('/asesores')
@@ -98,12 +104,21 @@ const NuevoAsesor = ({ history }) => {
           query: GET_ALL_USERS,
           variables: { tipoUsuario: 2, estado: '' }
         }
-        const { GetAllUsers } = cache.readQuery(opts)
+        const prevData = cache.readQuery(opts)
+        console.log(prevData)
+        if (!prevData) {
+          return cache.writeQuery({
+            ...opts,
+            data: {
+              GetAllUsers: [data.CrearUsuario]
+            }
+          })
+        }
 
         cache.writeQuery({
           ...opts,
           data: {
-            GetAllUsers: [data.CrearUsuario, ...GetAllUsers]
+            GetAllUsers: [data.CrearUsuario, ...prevData.GetAllUsers]
           }
         })
       }
@@ -278,9 +293,11 @@ const NuevoAsesor = ({ history }) => {
                         </Label>
                         <Input
                           id="telefono"
-                          name="telefono"
-                          placeholder="00354868"
-                          disabled
+                          name="celular"
+                          placeholder="999 999 999"
+                          value={values.celular}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
                         />
                       </FormGroup>
                     </div>
@@ -303,9 +320,11 @@ const NuevoAsesor = ({ history }) => {
                         <Label for="wsp">Whatsapp</Label>
                         <Input
                           id="wsp"
-                          name="wsp"
+                          name="whatsapp"
                           placeholder="999 999 999"
-                          disabled
+                          value={values.whatsapp}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
                         />
                       </FormGroup>
                       <FormGroup className="col-12 col-md">
@@ -314,7 +333,9 @@ const NuevoAsesor = ({ history }) => {
                           id="facebook"
                           name="facebook"
                           placeholder="@JohnDoe"
-                          disabled
+                          value={values.facebook}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
                         />
                       </FormGroup>
                     </div>

@@ -46,14 +46,20 @@ const UsersList = () => {
   const history = useHistory()
 
   // QUERY para lista de usuarios
-  const { data } = useGetAllUsersQuery({
+  const { data, refetch } = useGetAllUsersQuery({
     variables: { estado: '', tipoUsuario: 2 }
   })
 
   // Mutation para eliminar
   const [deleteUser] = useDeleteUsuarioMutation({
-    onError: ({ graphQLErrors }) => console.log(graphQLErrors[0].message),
-    onCompleted: (data) => console.log(data)
+    onError: ({ graphQLErrors }) => console.log(graphQLErrors),
+    onCompleted: ({ DeleteUsuario }) => {
+      if (DeleteUsuario === 'ELIMINADO') {
+        console.log(DeleteUsuario)
+        toast.success('Usuario eliminado con exito.')
+      }
+      refetch({ estado: '', tipoUsuario: 2 })
+    }
   })
 
   const users = data ? data.GetAllUsers : []
@@ -74,7 +80,33 @@ const UsersList = () => {
       buttonsStyling: false
     }).then(async function (result) {
       if (result.value) {
-        await deleteUser({ variables: { input: { ...user } } })
+        const {
+          Provincia,
+          Distrito,
+          Departamento,
+          Documento,
+          tipoUsuario,
+          apiToken,
+          confirmPassword,
+          ...rest
+        } = user
+        const payload = {
+          ...rest,
+          ProvCodi: parseInt(Provincia.ProvCodi),
+          DistCodi: parseInt(Distrito.DistCodi),
+          DeparCodi: parseInt(Departamento.DeparCodi)
+          // tipoDocumento: parseInt(Documento.value),
+          // tipoUsuario: parseInt(tipoUsuario.value)
+        }
+        const input = {
+          ...rest,
+          foto: user.foto.id
+        }
+        await deleteUser({
+          variables: {
+            input: { ...input }
+          }
+        })
         MySwal.fire({
           icon: 'success',
           title: 'Eliminado!',
@@ -83,6 +115,7 @@ const UsersList = () => {
             confirmButton: 'btn btn-success'
           }
         })
+        refetch({ estado: '', tipoUsuario: 2 })
       }
     })
   }
@@ -144,7 +177,6 @@ const UsersList = () => {
               <th>Documento</th>
               <th>Email</th>
               <th className="text-center">Facebook</th>
-              <th className="text-center">Whatsapp</th>
               <th className="text-center">Celular</th>
               <th className="text-center">Estado</th>
               <th className="text-center">Acciones</th>
@@ -176,9 +208,8 @@ const UsersList = () => {
                     {documento} - {user.nroDocumento}
                   </td>
                   <td>{user.email}</td>
-                  <td className="text-center">@Diamanteros</td>
-                  <td className="text-center">+51 999 999 999</td>
-                  <td className="text-center">+51 999 999 999</td>
+                  <td className="text-center">{user.facebook}</td>
+                  <td className="text-center">{user.celular}</td>
                   <td className="text-center">
                     <CustomInput
                       className="ml-2"
