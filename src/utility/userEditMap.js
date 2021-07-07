@@ -8,9 +8,10 @@ export const userEditMap = (user) => {
     tipoDocumento,
     ...rest
   } = user
+  console.log(foto)
   return {
     ...rest,
-    foto: foto.id,
+    foto: !foto ? 1 : foto.id,
     tipoUsuario: {
       value: user.tipoUsuario,
       label: user.tipoUsuario === 1 ? 'Administrador' : 'Asesor'

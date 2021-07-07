@@ -18,8 +18,8 @@ import SelectImg from '../../components/SelectImg'
 import { userEditMap } from '../../utility/userEditMap'
 import useLocation from '../../utility/hooks/useLocation'
 import {
-  useCrearUsuarioMutation,
   GetAllUsersDocument as GET_ALL_USERS,
+  useGetAllUsersQuery,
   useUpdateUsuarioMutation
 } from '../../generated/graphql'
 
@@ -35,13 +35,17 @@ const EditarAsesor = ({ history, location }) => {
 
   const initialvalues = userEditMap(location.state)
 
+  const { data: allUsers } = useGetAllUsersQuery({
+    variables: { tipoUsuario: 2, estado: '' }
+  })
+
   const [updateUser] = useUpdateUsuarioMutation({
     onError: (err) => {
       console.log(err)
       toast.success('Ha ocurrido un error')
     },
     onCompleted: () => {
-      toast.success('Usuario creado con exito¡¡¡')
+      toast.success('Usuario modificado con exito¡¡¡')
       history.push('/asesores')
     }
   })
@@ -65,19 +69,14 @@ const EditarAsesor = ({ history, location }) => {
       tipoUsuario: parseInt(tipoUsuario.value)
     }
 
-    console.log(payload)
-
     const gql = await updateUser({
       variables: { input: payload },
       update: (cache, { data }) => {
-        const opts = {
-          query: GET_ALL_USERS,
-          variables: { tipoUsuario: 2, estado: '' }
-        }
-        const { GetAllUsers } = cache.readQuery(opts)
+        const GetAllUsers = allUsers ? allUsers.GetAllUsers : []
 
         cache.writeQuery({
-          ...opts,
+          query: GET_ALL_USERS,
+          variables: { tipoUsuario: 2, estado: '' },
           data: {
             GetAllUsers: GetAllUsers.map((user) => {
               return user.userId === payload.userId ? data : user
@@ -121,8 +120,8 @@ const EditarAsesor = ({ history, location }) => {
           <Formik initialValues={initialvalues} onSubmit={onSubmit}>
             {({
               values,
-              handleChange,
               handleBlur,
+              handleChange,
               setFieldValue,
               handleSubmit
             }) => (
@@ -259,9 +258,11 @@ const EditarAsesor = ({ history, location }) => {
                         </Label>
                         <Input
                           id="telefono"
-                          name="telefono"
+                          name="celular"
                           placeholder="00354868"
-                          disabled
+                          value={values.celular}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
                         />
                       </FormGroup>
                     </div>
@@ -284,9 +285,11 @@ const EditarAsesor = ({ history, location }) => {
                         <Label for="wsp">Whatsapp</Label>
                         <Input
                           id="wsp"
-                          name="wsp"
+                          name="whatsapp"
                           placeholder="999 999 999"
-                          disabled
+                          value={values.whatsapp}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
                         />
                       </FormGroup>
                       <FormGroup className="col-12 col-md">
@@ -295,7 +298,9 @@ const EditarAsesor = ({ history, location }) => {
                           id="facebook"
                           name="facebook"
                           placeholder="@JohnDoe"
-                          disabled
+                          onBlur={handleBlur}
+                          value={values.facebook}
+                          onChange={handleChange}
                         />
                       </FormGroup>
                     </div>

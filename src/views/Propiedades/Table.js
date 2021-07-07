@@ -56,7 +56,12 @@ const ListaPropiedades = () => {
 
   const [getPropiBySlug] = useGetSlugPropiedadesLazyQuery({
     fetchPolicy: 'network-only',
-    onError: ({ graphQLErrors }) => console.log(graphQLErrors[0].debugMessage),
+    onError: ({ graphQLErrors }) => {
+      console.log(graphQLErrors[0].debugMessage)
+      return toast.error('El slug ingresado no Existe.', {
+        position: 'bottom-center'
+      })
+    },
     onCompleted: ({ GetSlugPropiedades }) => {
       console.log(GetSlugPropiedades)
       if (!GetSlugPropiedades) {

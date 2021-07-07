@@ -7,8 +7,9 @@ import { useSelector } from 'react-redux'
 // ** Third Party Components
 import Select from 'react-select'
 import ReactPaginate from 'react-paginate'
-import { MoreVertical, Edit, Trash } from 'react-feather'
 import { selectThemeColors } from '@utils'
+import { useApolloClient } from '@apollo/client'
+import { MoreVertical, Edit, Trash } from 'react-feather'
 import {
   Card,
   CardHeader,
@@ -35,7 +36,9 @@ import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
 import { useHistory } from 'react-router-dom'
 import {
   useGetAllUsersQuery,
-  useDeleteUsuarioMutation
+  useDeleteUsuarioMutation,
+  useUpdateUsuarioMutation,
+  GetAllUsersDocument as GET_ALL_USERS
 } from '../../generated/graphql'
 
 import styles from './styles.module.css'
@@ -44,10 +47,16 @@ const MySwal = withReactContent(Swal)
 
 const UsersList = () => {
   const history = useHistory()
+  const cache = useApolloClient()
 
   // QUERY para lista de usuarios
   const { data, refetch } = useGetAllUsersQuery({
     variables: { estado: '', tipoUsuario: 2 }
+  })
+
+  // Mutation para actualizar
+  const [updateUser] = useUpdateUsuarioMutation({
+    onCompleted: ({ UpdateUsuario }) => console.log(UpdateUsuario)
   })
 
   // Mutation para eliminar
@@ -58,11 +67,40 @@ const UsersList = () => {
         console.log(DeleteUsuario)
         toast.success('Usuario eliminado con exito.')
       }
-      refetch({ estado: '', tipoUsuario: 2 })
     }
   })
 
   const users = data ? data.GetAllUsers : []
+
+  const handleChangeEstado = async (newUser, checked) => {
+    cache.writeQuery({
+      query: GET_ALL_USERS,
+      variables: { tipoUsuario: 2, estado: '' },
+      data: {
+        GetAllUsers: users.map((user) => {
+          /* eslint-disable*/
+          return user.userId === newUser.userId
+            ? { ...newUser, estado: checked ? 1 : 0 }
+            : user
+          /* eslint-enable */
+        })
+      }
+    })
+
+    const { Distrito, Provincia, Departamento, apiToken, foto, ...rest } =
+      newUser
+    const payload = {
+      ...rest,
+      estado: checked ? 1 : 0,
+      foto: parseInt(foto.id),
+      DistCodi: parseInt(Distrito.DistCodi),
+      ProvCodi: parseInt(Provincia.ProvCodi),
+      DeparCodi: parseInt(Departamento.DeparCodi)
+    }
+
+    console.log(payload)
+    await updateUser({ variables: { input: payload } })
+  }
 
   // ** Handle Alert
   const HandleDelete = (user) => {
@@ -212,12 +250,15 @@ const UsersList = () => {
                   <td className="text-center">{user.celular}</td>
                   <td className="text-center">
                     <CustomInput
-                      className="ml-2"
+                      // inline
+                      name="estado"
                       type="switch"
-                      id={`secundary-${i}`}
-                      name={`secundary-${i}`}
-                      inline
-                      defaultChecked
+                      id={user.userId}
+                      // className="ml-2"
+                      checked={user.estado}
+                      onChange={({ target: { checked } }) => {
+                        handleChangeEstado(user, checked)
+                      }}
                     />
                   </td>
                   <td>
