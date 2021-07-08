@@ -20,41 +20,60 @@ const Routes = [
     path: '/inicio',
     component: lazy(() => import('../../views/Inicio'))
   },
+  /* RUTAS SOLO ADMINISTRADOR */
   {
     path: '/imagenes',
+    meta: { restrict: true },
     component: lazy(() => import('../../views/Imagenes'))
   },
   {
     path: '/clientes',
+    meta: { restrict: true },
     component: lazy(() => import('../../views/Clientes/index'))
   },
   {
     path: '/asesores',
+    meta: { restrict: true },
     component: lazy(() => import('../../views/Asesores'))
   },
   {
     path: '/nuevo-asesor',
+    meta: { restrict: true },
     component: lazy(() => import('../../views/NuevoAsesor'))
   },
   {
+    meta: { restrict: true },
     path: '/editar-asesor/:id',
     component: lazy(() => import('../../views/EditarAsesor'))
   },
   {
     path: '/propiedades',
+    meta: { restrict: true },
     component: lazy(() => import('../../views/Propiedades'))
   },
   {
     path: '/nueva-propiedad',
+    meta: { restrict: true },
     component: lazy(() => import('../../views/NuevaPropiedad'))
   },
   {
     path: '/editar-propiedad/:id',
+    meta: { restrict: true },
     component: lazy(() => import('../../views/EditarPropiedad'))
   },
   {
     path: '/categorias',
+    meta: { restrict: true },
     component: lazy(() => import('../../views/Categorys'))
+  },
+  /* RUTAS SOLO ADMINISTRADOR */
+  {
+    path: '/mis-propiedades',
+    component: lazy(() => import('../../views/PropiedadesAsesor'))
+  },
+  {
+    path: '/perfil',
+    component: lazy(() => import('../../views/Perfil'))
   },
   {
     path: '/error',

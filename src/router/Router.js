@@ -1,6 +1,6 @@
 // ** React Imports
 import { Suspense, useContext, lazy, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 // ** Utils
 // import { isUserLoggedIn } from '@utils'
@@ -32,7 +32,7 @@ import { handleLogin } from '../redux/actions/auth'
 
 const Router = () => {
   // ** Hooks
-  const isAuth = useAuth()
+  const { isAuth, isAdmin } = useAuth()
   const dispatch = useDispatch()
   const [layout, setLayout] = useLayout()
   const [transition, setTransition] = useRouterTransition()
@@ -60,11 +60,12 @@ const Router = () => {
 
   // ** Return Filtered Array of Routes & Paths
   const LayoutRoutesAndPaths = (layout) => {
-    const LayoutRoutes = []
     const LayoutPaths = []
+    const LayoutRoutes = []
 
     if (Routes) {
       Routes.filter((route) => {
+        if (!isAdmin && route.meta?.restrict) return
         // ** Checks if Route layout or Default layout matches current layout
         if (
           route.layout === layout ||
@@ -143,15 +144,16 @@ const Router = () => {
       return (
         <Route path={LayoutPaths} key={index}>
           <LayoutTag
-            routerProps={routerProps}
             layout={layout}
             setLayout={setLayout}
             transition={transition}
+            routerProps={routerProps}
             setTransition={setTransition}
             currentActiveItem={currentActiveItem}
           >
             <Switch>
               {LayoutRoutes.map((route) => {
+                if (!isAdmin && route.meta?.restrict) return
                 return (
                   <Route
                     key={route.path}

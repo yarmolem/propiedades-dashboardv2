@@ -23,7 +23,7 @@ export type Scalars = {
 };
 
 export type CambiarContrasenaInput = {
-  id?: Maybe<Scalars['ID']>;
+  userId?: Maybe<Scalars['ID']>;
   passwordNuevo?: Maybe<Scalars['String']>;
   passwordAntiguo?: Maybe<Scalars['String']>;
 };
@@ -313,7 +313,7 @@ export type Propiedades = {
   Distrito?: Maybe<Distrito>;
   Categorias?: Maybe<Categorias>;
   Asesor?: Maybe<User>;
-  Planos?: Maybe<Planos>;
+  Planos?: Maybe<Array<Planos>>;
 };
 
 export type PropiedadesInput = {
@@ -594,6 +594,52 @@ export type CreateImageMutation = (
     { __typename?: 'Imagenes' }
     & Pick<Imagenes, 'id' | 'url' | 'descripcion'>
   )> }
+);
+
+export type DeleteImageMutationVariables = Exact<{
+  input: ImagenesInput;
+}>;
+
+
+export type DeleteImageMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'DeleteImage'>
+);
+
+export type CambiarContrasenaMutationVariables = Exact<{
+  input: CambiarContrasenaInput;
+}>;
+
+
+export type CambiarContrasenaMutation = (
+  { __typename?: 'Mutation' }
+  & { CambiarContrasena?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'alias' | 'email' | 'userId' | 'nombres' | 'apellidos' | 'tipoUsuario' | 'nroDocumento' | 'tipoDocumento' | 'fechaNacimiento' | 'estado' | 'apiToken'>
+    & { foto?: Maybe<(
+      { __typename?: 'Imagenes' }
+      & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+    )>, Departamento?: Maybe<(
+      { __typename?: 'Departamento' }
+      & Pick<Departamento, 'DeparCodi' | 'DeparNom'>
+    )>, Provincia?: Maybe<(
+      { __typename?: 'Provincia' }
+      & Pick<Provincia, 'ProvCodi' | 'ProvNom' | 'DeparCodi'>
+    )>, Distrito?: Maybe<(
+      { __typename?: 'Distrito' }
+      & Pick<Distrito, 'DistCodi' | 'DistNom' | 'ProvCodi' | 'destacado'>
+    )> }
+  )> }
+);
+
+export type RecuperarContraUsuarioMutationVariables = Exact<{
+  input: UserInput;
+}>;
+
+
+export type RecuperarContraUsuarioMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'RecuperarContraUsuario'>
 );
 
 export type CrearPlanosMutationVariables = Exact<{
@@ -965,6 +1011,72 @@ export type GetAllPropiedadesQuery = (
           & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
         )> }
       )>, Asesor?: Maybe<(
+        { __typename?: 'User' }
+        & Pick<User, 'userId' | 'alias' | 'tipoUsuario' | 'nombres' | 'apellidos' | 'tipoDocumento' | 'nroDocumento' | 'fechaNacimiento' | 'email' | 'estado' | 'apiToken'>
+        & { foto?: Maybe<(
+          { __typename?: 'Imagenes' }
+          & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+        )>, Departamento?: Maybe<(
+          { __typename?: 'Departamento' }
+          & Pick<Departamento, 'DeparCodi' | 'DeparNom'>
+        )>, Provincia?: Maybe<(
+          { __typename?: 'Provincia' }
+          & Pick<Provincia, 'ProvCodi' | 'ProvNom' | 'DeparCodi'>
+        )>, Distrito?: Maybe<(
+          { __typename?: 'Distrito' }
+          & Pick<Distrito, 'DistCodi' | 'DistNom' | 'ProvCodi' | 'destacado' | 'estado'>
+        )> }
+      )> }
+    )>> }
+  )> }
+);
+
+export type GetAsesorPropiedadesQueryVariables = Exact<{
+  numberPaginate?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type GetAsesorPropiedadesQuery = (
+  { __typename?: 'Query' }
+  & { GetAsesorPropiedades?: Maybe<(
+    { __typename?: 'GetPropiedades' }
+    & Pick<GetPropiedades, 'NroItems'>
+    & { data?: Maybe<Array<(
+      { __typename?: 'Propiedades' }
+      & Pick<Propiedades, 'lat' | 'log' | 'slug' | 'pisos' | 'video' | 'titulo' | 'estado' | 'banios' | 'cuartos' | 'ambientes' | 'destacado' | 'direccion' | 'antiguedad' | 'dimensiones' | 'propiedadId' | 'tipoContrato' | 'areaConstruida' | 'descripcionCorta' | 'descripcionCompleta'>
+      & { fotoPrincipal?: Maybe<(
+        { __typename?: 'Imagenes' }
+        & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+      )>, fotoSecundaria?: Maybe<(
+        { __typename?: 'Imagenes' }
+        & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+      )>, galeria?: Maybe<Array<(
+        { __typename?: 'Imagenes' }
+        & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+      )>>, Departamento?: Maybe<(
+        { __typename?: 'Departamento' }
+        & Pick<Departamento, 'DeparCodi' | 'DeparNom'>
+      )>, Provincia?: Maybe<(
+        { __typename?: 'Provincia' }
+        & Pick<Provincia, 'ProvCodi' | 'ProvNom' | 'DeparCodi'>
+      )>, Distrito?: Maybe<(
+        { __typename?: 'Distrito' }
+        & Pick<Distrito, 'DistCodi' | 'DistNom' | 'ProvCodi' | 'destacado'>
+      )>, Categorias?: Maybe<(
+        { __typename?: 'Categorias' }
+        & Pick<Categorias, 'categoriaId' | 'slugCategoria' | 'nombreCategoria' | 'descripcionCategoria' | 'KeywordsCategoria'>
+        & { ImagenPrincipal?: Maybe<(
+          { __typename?: 'Imagenes' }
+          & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+        )>, ImagenSecundaria?: Maybe<(
+          { __typename?: 'Imagenes' }
+          & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+        )> }
+      )>, Planos?: Maybe<Array<(
+        { __typename?: 'Planos' }
+        & Pick<Planos, 'planoId' | 'tituloPlano' | 'descripcionCortaPlano' | 'descripcionLargaPlano'>
+      )>>, Asesor?: Maybe<(
         { __typename?: 'User' }
         & Pick<User, 'userId' | 'alias' | 'tipoUsuario' | 'nombres' | 'apellidos' | 'tipoDocumento' | 'nroDocumento' | 'fechaNacimiento' | 'email' | 'estado' | 'apiToken'>
         & { foto?: Maybe<(
@@ -1358,6 +1470,131 @@ export function useCreateImageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateImageMutationHookResult = ReturnType<typeof useCreateImageMutation>;
 export type CreateImageMutationResult = Apollo.MutationResult<CreateImageMutation>;
 export type CreateImageMutationOptions = Apollo.BaseMutationOptions<CreateImageMutation, CreateImageMutationVariables>;
+export const DeleteImageDocument = gql`
+    mutation DeleteImage($input: ImagenesInput!) {
+  DeleteImage(input: $input)
+}
+    `;
+export type DeleteImageMutationFn = Apollo.MutationFunction<DeleteImageMutation, DeleteImageMutationVariables>;
+
+/**
+ * __useDeleteImageMutation__
+ *
+ * To run a mutation, you first call `useDeleteImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteImageMutation, { data, loading, error }] = useDeleteImageMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteImageMutation(baseOptions?: Apollo.MutationHookOptions<DeleteImageMutation, DeleteImageMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteImageMutation, DeleteImageMutationVariables>(DeleteImageDocument, options);
+      }
+export type DeleteImageMutationHookResult = ReturnType<typeof useDeleteImageMutation>;
+export type DeleteImageMutationResult = Apollo.MutationResult<DeleteImageMutation>;
+export type DeleteImageMutationOptions = Apollo.BaseMutationOptions<DeleteImageMutation, DeleteImageMutationVariables>;
+export const CambiarContrasenaDocument = gql`
+    mutation CambiarContrasena($input: CambiarContrasenaInput!) {
+  CambiarContrasena: CambiarContrasenaUsuario(input: $input) {
+    alias
+    email
+    userId
+    nombres
+    apellidos
+    tipoUsuario
+    nroDocumento
+    tipoDocumento
+    fechaNacimiento
+    foto {
+      id
+      descripcion
+      url
+    }
+    estado
+    apiToken
+    Departamento {
+      DeparCodi
+      DeparNom
+    }
+    Provincia {
+      ProvCodi
+      ProvNom
+      DeparCodi
+    }
+    Distrito {
+      DistCodi
+      DistNom
+      ProvCodi
+      destacado
+    }
+  }
+}
+    `;
+export type CambiarContrasenaMutationFn = Apollo.MutationFunction<CambiarContrasenaMutation, CambiarContrasenaMutationVariables>;
+
+/**
+ * __useCambiarContrasenaMutation__
+ *
+ * To run a mutation, you first call `useCambiarContrasenaMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCambiarContrasenaMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cambiarContrasenaMutation, { data, loading, error }] = useCambiarContrasenaMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCambiarContrasenaMutation(baseOptions?: Apollo.MutationHookOptions<CambiarContrasenaMutation, CambiarContrasenaMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CambiarContrasenaMutation, CambiarContrasenaMutationVariables>(CambiarContrasenaDocument, options);
+      }
+export type CambiarContrasenaMutationHookResult = ReturnType<typeof useCambiarContrasenaMutation>;
+export type CambiarContrasenaMutationResult = Apollo.MutationResult<CambiarContrasenaMutation>;
+export type CambiarContrasenaMutationOptions = Apollo.BaseMutationOptions<CambiarContrasenaMutation, CambiarContrasenaMutationVariables>;
+export const RecuperarContraUsuarioDocument = gql`
+    mutation RecuperarContraUsuario($input: UserInput!) {
+  RecuperarContraUsuario(input: $input)
+}
+    `;
+export type RecuperarContraUsuarioMutationFn = Apollo.MutationFunction<RecuperarContraUsuarioMutation, RecuperarContraUsuarioMutationVariables>;
+
+/**
+ * __useRecuperarContraUsuarioMutation__
+ *
+ * To run a mutation, you first call `useRecuperarContraUsuarioMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRecuperarContraUsuarioMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [recuperarContraUsuarioMutation, { data, loading, error }] = useRecuperarContraUsuarioMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRecuperarContraUsuarioMutation(baseOptions?: Apollo.MutationHookOptions<RecuperarContraUsuarioMutation, RecuperarContraUsuarioMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RecuperarContraUsuarioMutation, RecuperarContraUsuarioMutationVariables>(RecuperarContraUsuarioDocument, options);
+      }
+export type RecuperarContraUsuarioMutationHookResult = ReturnType<typeof useRecuperarContraUsuarioMutation>;
+export type RecuperarContraUsuarioMutationResult = Apollo.MutationResult<RecuperarContraUsuarioMutation>;
+export type RecuperarContraUsuarioMutationOptions = Apollo.BaseMutationOptions<RecuperarContraUsuarioMutation, RecuperarContraUsuarioMutationVariables>;
 export const CrearPlanosDocument = gql`
     mutation CrearPlanos($input: PlanosInput!) {
   CrearPlanos(input: $input) {
@@ -2359,6 +2596,150 @@ export function useGetAllPropiedadesLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetAllPropiedadesQueryHookResult = ReturnType<typeof useGetAllPropiedadesQuery>;
 export type GetAllPropiedadesLazyQueryHookResult = ReturnType<typeof useGetAllPropiedadesLazyQuery>;
 export type GetAllPropiedadesQueryResult = Apollo.QueryResult<GetAllPropiedadesQuery, GetAllPropiedadesQueryVariables>;
+export const GetAsesorPropiedadesDocument = gql`
+    query GetAsesorPropiedades($numberPaginate: Int, $page: Int) {
+  GetAsesorPropiedades(numberPaginate: $numberPaginate, page: $page) {
+    NroItems
+    data {
+      lat
+      log
+      slug
+      pisos
+      video
+      titulo
+      estado
+      banios
+      cuartos
+      ambientes
+      destacado
+      direccion
+      antiguedad
+      dimensiones
+      propiedadId
+      tipoContrato
+      areaConstruida
+      descripcionCorta
+      descripcionCompleta
+      fotoPrincipal {
+        id
+        descripcion
+        url
+      }
+      fotoSecundaria {
+        id
+        descripcion
+        url
+      }
+      galeria {
+        id
+        descripcion
+        url
+      }
+      Departamento {
+        DeparCodi
+        DeparNom
+      }
+      Provincia {
+        ProvCodi
+        ProvNom
+        DeparCodi
+      }
+      Distrito {
+        DistCodi
+        DistNom
+        ProvCodi
+        destacado
+      }
+      Categorias {
+        categoriaId
+        slugCategoria
+        nombreCategoria
+        descripcionCategoria
+        ImagenPrincipal {
+          id
+          descripcion
+          url
+        }
+        ImagenSecundaria {
+          id
+          descripcion
+          url
+        }
+        KeywordsCategoria
+      }
+      Planos {
+        planoId
+        tituloPlano
+        descripcionCortaPlano
+        descripcionLargaPlano
+      }
+      Asesor {
+        userId
+        alias
+        tipoUsuario
+        nombres
+        apellidos
+        tipoDocumento
+        nroDocumento
+        fechaNacimiento
+        email
+        foto {
+          id
+          descripcion
+          url
+        }
+        estado
+        apiToken
+        Departamento {
+          DeparCodi
+          DeparNom
+        }
+        Provincia {
+          ProvCodi
+          ProvNom
+          DeparCodi
+        }
+        Distrito {
+          DistCodi
+          DistNom
+          ProvCodi
+          destacado
+          estado
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAsesorPropiedadesQuery__
+ *
+ * To run a query within a React component, call `useGetAsesorPropiedadesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAsesorPropiedadesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAsesorPropiedadesQuery({
+ *   variables: {
+ *      numberPaginate: // value for 'numberPaginate'
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useGetAsesorPropiedadesQuery(baseOptions?: Apollo.QueryHookOptions<GetAsesorPropiedadesQuery, GetAsesorPropiedadesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAsesorPropiedadesQuery, GetAsesorPropiedadesQueryVariables>(GetAsesorPropiedadesDocument, options);
+      }
+export function useGetAsesorPropiedadesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAsesorPropiedadesQuery, GetAsesorPropiedadesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAsesorPropiedadesQuery, GetAsesorPropiedadesQueryVariables>(GetAsesorPropiedadesDocument, options);
+        }
+export type GetAsesorPropiedadesQueryHookResult = ReturnType<typeof useGetAsesorPropiedadesQuery>;
+export type GetAsesorPropiedadesLazyQueryHookResult = ReturnType<typeof useGetAsesorPropiedadesLazyQuery>;
+export type GetAsesorPropiedadesQueryResult = Apollo.QueryResult<GetAsesorPropiedadesQuery, GetAsesorPropiedadesQueryVariables>;
 export const GetSlugPropiedadesDocument = gql`
     query GetSlugPropiedades($slug: String) {
   GetSlugPropiedades(slug: $slug) {

@@ -32,7 +32,7 @@ const FileUploaderBasic = ({ setImgs, maxFiles = 1 }) => {
         if (!GetImagenes) GetImagenes = []
         cache.writeQuery({
           query: GET_IMGS,
-          data: { GetImagenes: [...GetImagenes, data.CreateImage] }
+          data: { GetImagenes: [data.CreateImage, ...GetImagenes] }
         })
       }
     })

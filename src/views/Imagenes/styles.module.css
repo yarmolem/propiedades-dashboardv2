@@ -1,6 +1,6 @@
 .container {
   min-height: 75vh;
-  max-height: 80vh;
+  max-height: calc(100vh - 150px);
   overflow-y: auto;
 }
 
@@ -13,6 +13,14 @@
 }
 .container::-webkit-scrollbar-track {
   background: transparent;
+}
+
+.imageGrid {
+  gap: 0.5rem;
+  display: grid;
+  margin: 0 auto;
+  grid-auto-rows: 200px;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
 }
 
 .box {

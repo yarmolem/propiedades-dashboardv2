@@ -8,7 +8,6 @@ export const userEditMap = (user) => {
     tipoDocumento,
     ...rest
   } = user
-  console.log(foto)
   return {
     ...rest,
     foto: !foto ? 1 : foto.id,

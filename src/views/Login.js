@@ -162,17 +162,7 @@ const Login = ({ history }) => {
 
                 console.log('LOGIN', data.login)
 
-                const {
-                  Distrito,
-                  Provincia,
-                  nroDocumento,
-                  Departamento,
-                  tipoDocumento,
-                  fechaNacimiento,
-                  ...payload
-                } = data.login
-
-                dispatch(handleLogin({ ...payload, holdConnect }))
+                dispatch(handleLogin({ ...data.login, holdConnect }))
 
                 history.push('/')
               }}

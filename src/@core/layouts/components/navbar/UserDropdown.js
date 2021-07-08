@@ -48,17 +48,20 @@ const UserDropdown = () => {
       >
         <div className="user-nav d-sm-flex d-none">
           <span className="user-name font-weight-bold">
-            {(userData && `${userData['alias']} ${userData['apellidos']}`) ||
-              'John Doe'}
+            {(userData && userData['alias']) || 'John Doe'}
           </span>
           <span className="user-status">
-            {(userData && userData.role) || 'Administrador'}
+            {userData.tipoUsuario === 1 ? 'Administrador' : 'Asesor'}
           </span>
         </div>
         <Avatar img={userAvatar} imgHeight="40" imgWidth="40" status="online" />
       </DropdownToggle>
       <DropdownMenu right>
-        <DropdownItem tag={Link} to="#" onClick={(e) => e.preventDefault()}>
+        <DropdownItem
+          tag={Link}
+          to="perfil"
+          // onClick={(e) => e.preventDefault()}
+        >
           <User size={14} className="mr-75" />
           <span className="align-middle">Perfil</span>
         </DropdownItem>
