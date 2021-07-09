@@ -1,14 +1,22 @@
-.image-container {
-  /* min-height: 60vh; */
-  display: flex;
-  flex-direction: column;
+.imageGrid {
+  gap: 0.5rem;
+  display: grid;
+  margin: 0 auto;
+  grid-auto-rows: 200px;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 150px));
 }
 
+/* .image-container {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+} */
+
 .image-box {
-  width: 15rem;
-  height: 10rem;
+  width: 100%;
+  height: 100%;
   display: grid;
-  margin: 0.5rem;
+  /* margin: 0.5rem; */
   overflow: hidden;
   border-radius: 1rem;
   place-items: center;
@@ -53,8 +61,8 @@
 }
 
 .image-modal {
-  width: 85vw;
-  max-width: 85vw;
+  width: 90vw;
+  max-width: 90vw;
 }
 
 .image-box:hover {
@@ -65,8 +73,16 @@
 .pos-relative {
   position: relative;
 }
+.pos-absolute {
+  position: absolute;
+  bottom: 0;
+}
 
 .propiedad-step {
   justify-self: flex-end;
   align-self: flex-end;
+}
+
+button.visible {
+  opacity: 1;
 }

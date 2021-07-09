@@ -72,14 +72,12 @@ const NuevaPropiedad = () => {
   const ref = useRef(null)
   const [stepper, setStepper] = useState(null)
   const [state, setState] = useState(initialValues)
-  const [propiedadId, setPropiedadId] = useState(17)
+  const [propiedadId, setPropiedadId] = useState(null)
 
   const [createProp] = useCrearPropiedadesMutation({
     onError: ({ graphQLErrors }) => console.log(graphQLErrors),
     onCompleted: ({ CrearPropiedades }) => {
-      if (CrearPropiedades) {
-        setPropiedadId(CrearPropiedades.propiedadId)
-      }
+      if (CrearPropiedades) setPropiedadId(CrearPropiedades.propiedadId)
     }
   })
 
@@ -122,16 +120,16 @@ const NuevaPropiedad = () => {
     {
       id: 'detalles',
       title: 'Detalles',
-      subtitle: 'Informacion de la Propiedad',
       icon: <Home size={18} />,
+      subtitle: 'Informacion de la Propiedad',
       content: <Detalles {...{ stepper, state, setState, reset }} />
     },
 
     {
       id: 'imagenes',
       title: 'Imagenes',
-      subtitle: 'Imagenes de la propiedad',
       icon: <Image size={18} />,
+      subtitle: 'Imagenes de la propiedad',
       content: (
         <Imagenes {...{ stepper, state, setState, reset, handleCreatePropi }} />
       )
@@ -139,24 +137,16 @@ const NuevaPropiedad = () => {
     {
       id: 'planos',
       title: 'Planos',
-      subtitle: 'Planos de la propiedad',
       icon: <FilePlus size={18} />,
+      subtitle: 'Planos de la propiedad',
       content: <Planos {...{ stepper, state, setState, reset, propiedadId }} />
     }
   ]
 
   return (
-    <Fragment>
-      <Wizard
-        ref={ref}
-        steps={steps}
-        className="checkout-tab-steps"
-        instance={(el) => setStepper(el)}
-        options={{
-          linear: false
-        }}
-      />
-    </Fragment>
+    <div className="horizontal-wizard">
+      <Wizard ref={ref} steps={steps} instance={(el) => setStepper(el)} />
+    </div>
   )
 }
 

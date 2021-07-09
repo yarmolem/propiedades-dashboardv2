@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 import { Plus, Trash, Edit } from 'react-feather'
 import Modal from './Modal'
 
-import './index.css'
 import { Button, ButtonGroup } from 'reactstrap'
-
+import Imagen from '../../../../components/Imagen'
 import useDisclosure from '../../../../utility/hooks/useDisclosure'
+
+import styles from './styles.module.css'
 
 const Imagenes = ({ stepper, state, setState, reset, handleCreatePropi }) => {
   const [imgs, setImgs] = useState([])
@@ -28,6 +29,9 @@ const Imagenes = ({ stepper, state, setState, reset, handleCreatePropi }) => {
   }
 
   const handleNext = async () => {
+    if (imgs.length === 0) {
+    }
+
     const { CONTRATO, ASESOR, CATEGORIA, Prov, Dist, Depar, galeria, ...rest } =
       state
     const propMap = {
@@ -47,55 +51,59 @@ const Imagenes = ({ stepper, state, setState, reset, handleCreatePropi }) => {
   }
 
   return (
-    <div className="image-container">
+    <div className={styles['image-container']}>
       <div className="d-flex mb-1">
-        <h1 className="flex-fill">Imagenes</h1>
+        <div>
+          <h1 className="flex-fill">Imagenes</h1>
+          <small className="text-muted">
+            Para poder avanzar debes agregar fotos a la propiedad
+          </small>
+        </div>
       </div>
 
-      <div className="d-flex flex-wrap justify-content-center justify-content-md-start mb-2">
+      <div className={styles['imageGrid']}>
         {imgs.map(({ id, url, descripcion }) => {
           const foto1 = state.fotoPrincipal === parseInt(id)
           const foto2 = state.fotoSecundaria === parseInt(id)
 
           return (
-            <div key={id} className="image-box pos-relative">
-              <img src={url} alt={descripcion} />
-              <ButtonGroup className="radiosButtons">
-                <Button.Ripple
-                  onClick={() => deleteImg(id)}
-                  className="btn-icon imagenes_button-delete"
-                >
+            <Imagen key={id} src={url} alt={descripcion}>
+              <ButtonGroup className={styles['pos-absolute']}>
+                <Button.Ripple onClick={() => deleteImg(id)}>
                   <Trash size={14} />
                 </Button.Ripple>
                 <Button.Ripple
                   onClick={() => imgPrincipal(id)}
                   color={foto1 ? 'primary' : 'dark'}
-                  className="btn-icon imagenes_button-delete"
                 >
                   1
                 </Button.Ripple>
                 <Button.Ripple
                   color={foto2 ? 'primary' : 'dark'}
                   onClick={() => imgSecundaria(id)}
-                  className="btn-icon imagenes_button-delete"
                 >
                   2
                 </Button.Ripple>
               </ButtonGroup>
-            </div>
+            </Imagen>
           )
         })}
-        <div onClick={onToggle} className="btn-unstyled image-box">
+        <div
+          onClick={onToggle}
+          className={`${styles['image-box']} btn-unstyled`}
+        >
           <Plus size={50} />
         </div>
       </div>
-      <Button.Ripple
-        color="primary"
-        className="propiedad-step"
-        onClick={handleNext}
-      >
-        Crear propiedad
-      </Button.Ripple>
+      <div className="align-self-end mt-2">
+        <Button.Ripple
+          color="primary"
+          onClick={handleNext}
+          disabled={imgs.length === 0}
+        >
+          Crear propiedad
+        </Button.Ripple>
+      </div>
       <Modal {...{ open, onToggle, imgs, setImgs }} />
     </div>
   )

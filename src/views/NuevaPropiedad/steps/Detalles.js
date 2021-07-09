@@ -13,17 +13,19 @@ import {
 import Select from 'react-select'
 import { Formik } from 'formik'
 
-import useLocation from '../../../utility/hooks/useLocation'
 import {
   useGetAllUsersQuery,
   useGetCategoriaQuery
 } from '../../../generated/graphql'
+import useLocation from '../../../utility/hooks/useLocation'
+import { PropiedadSchema } from '../../../validation/Propiedad'
+import ErrorMessage from '../../../components/ErrorMessage'
 
 const initialValues = {
   titulo: '',
   CONTRATO: {
     value: 0,
-    label: ''
+    label: 'Seleccione tipo de contrato'
   },
   descripcionCorta: '',
   descripcionCompleta: '',
@@ -45,11 +47,11 @@ const initialValues = {
   direccion: '',
   CATEGORIA: {
     value: 0,
-    label: ''
+    label: 'Seleccione una Categoria'
   },
   ASESOR: {
     value: 0,
-    label: ''
+    label: 'Seleccione un asesor'
   },
   Prov: {
     value: 0,
@@ -125,10 +127,18 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
       <CardBody>
         <Formik
           initialValues={initialValues}
-          onSubmit={(values) => setState({ ...values })}
+          validationSchema={PropiedadSchema}
+          onSubmit={(values, { validateForm }) => {
+            if (validateForm(values)) {
+              setState({ ...values })
+              stepper.next()
+            }
+          }}
         >
           {({
             values,
+            errors,
+            touched,
             handleBlur,
             handleChange,
             handleSubmit,
@@ -145,6 +155,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                   value={values.titulo}
                   onChange={handleChange}
                 />
+                <ErrorMessage {...{ errors, touched, name: 'titulo' }} />
               </FormGroup>
               <div className="row">
                 <FormGroup className="col-12 col-sm-4">
@@ -160,6 +171,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     value={values.CATEGORIA}
                     onChange={(e) => setFieldValue('CATEGORIA', e)}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'CATEGORIA' }} />
                 </FormGroup>
                 <FormGroup className="col-12 col-sm-4">
                   <Label for="asesor">Asesor</Label>
@@ -174,6 +186,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     value={values.ASESOR}
                     onChange={(e) => setFieldValue('ASESOR', e)}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'ASESOR' }} />
                 </FormGroup>
                 <FormGroup className="col-12 col-sm-4">
                   <Label for="video">Video de presentación</Label>
@@ -185,6 +198,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     value={values.video}
                     onChange={handleChange}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'video' }} />
                 </FormGroup>
               </div>
               <div className="row">
@@ -199,6 +213,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     value={values.banios}
                     onChange={handleChange}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'banios' }} />
                 </FormGroup>
                 <FormGroup className="col">
                   <Label for="cuartos">Cuartos</Label>
@@ -211,6 +226,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     value={values.cuartos}
                     onChange={handleChange}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'cuartos' }} />
                 </FormGroup>
                 <FormGroup className="col">
                   <Label for="pisos">Pisos</Label>
@@ -223,6 +239,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     value={values.pisos}
                     onChange={handleChange}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'pisos' }} />
                 </FormGroup>
                 <FormGroup className="col">
                   <Label for="antiguedad">Antiguedad</Label>
@@ -235,6 +252,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     onChange={handleChange}
                     value={values.antiguedad}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'antiguedad' }} />
                 </FormGroup>
                 <FormGroup className="col col-md-3 col-lg-2">
                   <Label for="dimensiones">Dimensiones</Label>
@@ -247,6 +265,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     onChange={handleChange}
                     value={values.dimensiones}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'dimensiones' }} />
                 </FormGroup>
                 <FormGroup className="col col-md-3 col-lg-2">
                   <Label for="areaConstruida">Area Construida</Label>
@@ -258,6 +277,9 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.areaConstruida}
+                  />
+                  <ErrorMessage
+                    {...{ errors, touched, name: 'areaConstruida' }}
                   />
                 </FormGroup>
               </div>
@@ -278,7 +300,9 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     onBlur={handleBlur}
                     value={values.CONTRATO}
                     onChange={(e) => setFieldValue('CONTRATO', e)}
-                    // theme={selectThemeColors}
+                  />
+                  <ErrorMessage
+                    {...{ errors, touched, name: 'tipoContrato' }}
                   />
                 </FormGroup>
                 <FormGroup className="col-12 col-sm-4">
@@ -292,6 +316,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     onChange={handleChange}
                     value={values.direccion}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'direccion' }} />
                 </FormGroup>
                 <FormGroup className="col">
                   <Label for="lat">Latitud</Label>
@@ -304,6 +329,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     onBlur={handleBlur}
                     onChange={handleChange}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'lat' }} />
                 </FormGroup>
                 <FormGroup className="col">
                   <Label for="log">Longitud</Label>
@@ -316,6 +342,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     onBlur={handleBlur}
                     onChange={handleChange}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'log' }} />
                 </FormGroup>
               </div>
               <div className="row">
@@ -339,6 +366,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                       setDepCode(e.value)
                     }}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'Depar' }} />
                 </FormGroup>
                 <FormGroup className="col-12 col-md">
                   <Label for="provincia">
@@ -358,6 +386,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                       setProCode(e.value)
                     }}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'Prov' }} />
                 </FormGroup>
                 <FormGroup className="col">
                   <Label for="distrito">
@@ -376,6 +405,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                       setFieldValue('Dist', e)
                     }}
                   />
+                  <ErrorMessage {...{ errors, touched, name: 'Dist' }} />
                 </FormGroup>
               </div>
               <div className="row">
@@ -390,6 +420,9 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     onBlur={handleBlur}
                     onChange={handleChange}
                   />
+                  <ErrorMessage
+                    {...{ errors, touched, name: 'descripcionCorta' }}
+                  />
                 </FormGroup>
                 <FormGroup className="col-12 col-xl-7">
                   <Label for="descripcionCompleta">Descripción</Label>
@@ -401,6 +434,9 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                     value={values.descripcionCompleta}
                     onBlur={handleBlur}
                     onChange={handleChange}
+                  />
+                  <ErrorMessage
+                    {...{ errors, touched, name: 'descripcionCompleta' }}
                   />
                 </FormGroup>
               </div>
@@ -438,12 +474,7 @@ const NuevaPropiedad = ({ stepper, state, setState }) => {
                 </div>
               </div>
               <FormGroup className="d-flex mb-0">
-                <Button.Ripple
-                  onClick={() => stepper.next()}
-                  type="submit"
-                  color="primary"
-                  className="mr-1"
-                >
+                <Button.Ripple type="submit" color="primary" className="mr-1">
                   Siguiente
                 </Button.Ripple>
               </FormGroup>

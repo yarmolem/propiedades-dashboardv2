@@ -7,9 +7,10 @@ import {
   ModalFooter
 } from 'reactstrap'
 import { Check } from 'react-feather'
-
-import './index.css'
+import Imagen from '../../../../components/Imagen'
 import { useGetImagenesQuery } from '../../../../generated/graphql'
+
+import styles from './styles.module.css'
 
 const Selected = ({ checked, addImg, removeImg }) => {
   const [state, setState] = useState(checked)
@@ -23,7 +24,11 @@ const Selected = ({ checked, addImg, removeImg }) => {
     }
   }
 
-  return <button onClick={handleIMG}>{state && <Check size={15} />}</button>
+  return (
+    <button className={state ? styles.visible : ''} onClick={handleIMG}>
+      <Check size={15} color={state ? '#fff' : '#007f80'} />
+    </button>
+  )
 }
 
 const Modal = ({ open, onToggle, imgs, setImgs }) => {
@@ -44,24 +49,23 @@ const Modal = ({ open, onToggle, imgs, setImgs }) => {
       scrollable
       isOpen={open}
       toggle={onToggle}
-      className="image-modal"
+      className={styles['image-modal']}
     >
       <ModalHeader toggle={onToggle}>
         Selecciona las imagenes de la propiedad
       </ModalHeader>
       <ModalBody>
-        <div className="d-flex flex-wrap justify-content-center">
+        <div className={styles['imageGrid']}>
           {imagenes.map((img) => {
             const [check] = imgs.filter(({ id }) => id === img.id)
             return (
-              <div key={img.id} className="image-box pos-relative">
-                <img src={img.url} alt={img.descripcion} />
+              <Imagen src={img.url} alt={img.descripcion}>
                 <Selected
                   checked={check}
                   addImg={() => addImg(img)}
                   removeImg={() => removeImg(img)}
                 />
-              </div>
+              </Imagen>
             )
           })}
         </div>

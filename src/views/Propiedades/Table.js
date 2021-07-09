@@ -394,7 +394,7 @@ const ListaPropiedades = () => {
                 <td className="text-center px-0">{p.cuartos}</td>
                 <td className="text-center px-0">{p.pisos}</td>
                 <td>
-                  <Badge color="success">
+                  <Badge color={p.tipoContrato === 1 ? 'success' : 'info'}>
                     {p.tipoContrato === 1 ? 'Venta' : 'Alquiler'}
                   </Badge>
                 </td>

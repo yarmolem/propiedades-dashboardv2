@@ -12,10 +12,14 @@ const Imagen = ({ src, alt, children }) => {
     if (inView) setLoad(true)
   }, [inView])
 
+  /* eslint-disable */
+  const sizeImg = tall ? styles.imageTaller : styles.imageWider
+
+  /* eslint-enable */
   const onLoad = ({ w, h }) => setTall(h > w)
 
   return (
-    <div ref={ref} className={tall ? styles.imageTaller : styles.imageWider}>
+    <div ref={ref} className={sizeImg}>
       {children}
       {load ? (
         <img
