@@ -20,7 +20,6 @@ export default [
   {
     id: 'clientes',
     title: 'Clientes',
-    meta: { restrict: true },
     icon: <Users size={20} />,
     navLink: '/clientes'
   },

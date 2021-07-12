@@ -48,6 +48,23 @@ export type CategoriasInput = {
   KeywordsCategoria?: Maybe<Scalars['String']>;
 };
 
+export type Cliente = {
+  __typename?: 'Cliente';
+  clienteId?: Maybe<Scalars['Int']>;
+  nombresCliente?: Maybe<Scalars['String']>;
+  apellidosCliente?: Maybe<Scalars['String']>;
+  celularCliente?: Maybe<Scalars['String']>;
+  correoCliente?: Maybe<Scalars['String']>;
+};
+
+export type ClienteInput = {
+  clienteId?: Maybe<Scalars['Int']>;
+  nombresCliente?: Maybe<Scalars['String']>;
+  apellidosCliente?: Maybe<Scalars['String']>;
+  celularCliente?: Maybe<Scalars['String']>;
+  correoCliente?: Maybe<Scalars['String']>;
+};
+
 
 
 
@@ -69,6 +86,33 @@ export type Distrito = {
 export type DistritoInput = {
   DistCodi?: Maybe<Scalars['ID']>;
   destacado?: Maybe<Scalars['Int']>;
+};
+
+export type Formulario = {
+  __typename?: 'Formulario';
+  formularioId?: Maybe<Scalars['Int']>;
+  horarioContacto?: Maybe<Scalars['String']>;
+  descripcion?: Maybe<Scalars['String']>;
+  estado?: Maybe<Scalars['Int']>;
+  clienteId?: Maybe<Scalars['Int']>;
+  propiedadId?: Maybe<Scalars['Int']>;
+  Propiedades?: Maybe<Propiedades>;
+  Cliente?: Maybe<Cliente>;
+};
+
+export type FormularioInput = {
+  formularioId?: Maybe<Scalars['Int']>;
+  horarioContacto?: Maybe<Scalars['String']>;
+  descripcion?: Maybe<Scalars['String']>;
+  estado?: Maybe<Scalars['Int']>;
+  clienteId?: Maybe<Scalars['Int']>;
+  propiedadId?: Maybe<Scalars['Int']>;
+};
+
+export type GetFormularios = {
+  __typename?: 'GetFormularios';
+  NroItems?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Formulario>>;
 };
 
 export type GetPlanos = {
@@ -98,6 +142,9 @@ export type ImagenesInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  CrearFormulario?: Maybe<Formulario>;
+  UpdateFormulario?: Maybe<Formulario>;
+  DeleteFormulario?: Maybe<Scalars['String']>;
   CrearPlanos?: Maybe<Planos>;
   UpdatePlanos?: Maybe<Planos>;
   DeletePlanos?: Maybe<Scalars['String']>;
@@ -117,6 +164,23 @@ export type Mutation = {
   DeleteImage?: Maybe<Scalars['String']>;
   UpdateImage?: Maybe<Imagenes>;
   CreateImage?: Maybe<Imagenes>;
+};
+
+
+export type MutationCrearFormularioArgs = {
+  input: ClienteInput;
+  input1: FormularioInput;
+};
+
+
+export type MutationUpdateFormularioArgs = {
+  input: ClienteInput;
+  input1?: Maybe<FormularioInput>;
+};
+
+
+export type MutationDeleteFormularioArgs = {
+  input: FormularioInput;
 };
 
 
@@ -366,6 +430,7 @@ export type Query = {
   GetAllPropiedades?: Maybe<GetPropiedades>;
   GetAsesorPropiedades?: Maybe<GetPropiedades>;
   GetSlugPropiedades?: Maybe<Propiedades>;
+  GetAllFormularios?: Maybe<GetFormularios>;
 };
 
 
@@ -411,6 +476,13 @@ export type QueryGetAsesorPropiedadesArgs = {
 
 export type QueryGetSlugPropiedadesArgs = {
   slug?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetAllFormulariosArgs = {
+  numberPaginate?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  estado?: Maybe<Scalars['String']>;
 };
 
 /** The available directions for ordering a list of records. */
@@ -915,6 +987,54 @@ export type GetCategoriaSlugQuery = (
       { __typename?: 'Imagenes' }
       & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
     )> }
+  )> }
+);
+
+export type GetAllFormulariosQueryVariables = Exact<{
+  numberPaginate?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  estado?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetAllFormulariosQuery = (
+  { __typename?: 'Query' }
+  & { GetAllFormularios?: Maybe<(
+    { __typename?: 'GetFormularios' }
+    & Pick<GetFormularios, 'NroItems'>
+    & { data?: Maybe<Array<(
+      { __typename?: 'Formulario' }
+      & Pick<Formulario, 'formularioId' | 'horarioContacto' | 'descripcion' | 'estado' | 'clienteId' | 'propiedadId'>
+      & { Propiedades?: Maybe<(
+        { __typename?: 'Propiedades' }
+        & Pick<Propiedades, 'propiedadId' | 'titulo' | 'slug' | 'tipoContrato' | 'descripcionCorta' | 'descripcionCompleta' | 'video' | 'estado' | 'destacado' | 'lat' | 'log' | 'cuartos' | 'banios' | 'pisos' | 'dimensiones' | 'antiguedad' | 'areaConstruida' | 'ambientes' | 'direccion'>
+        & { fotoPrincipal?: Maybe<(
+          { __typename?: 'Imagenes' }
+          & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+        )>, fotoSecundaria?: Maybe<(
+          { __typename?: 'Imagenes' }
+          & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+        )>, galeria?: Maybe<Array<(
+          { __typename?: 'Imagenes' }
+          & Pick<Imagenes, 'id' | 'descripcion' | 'url'>
+        )>>, Departamento?: Maybe<(
+          { __typename?: 'Departamento' }
+          & Pick<Departamento, 'DeparCodi' | 'DeparNom'>
+        )>, Provincia?: Maybe<(
+          { __typename?: 'Provincia' }
+          & Pick<Provincia, 'ProvCodi' | 'ProvNom' | 'DeparCodi'>
+        )>, Distrito?: Maybe<(
+          { __typename?: 'Distrito' }
+          & Pick<Distrito, 'DistCodi' | 'DistNom' | 'ProvCodi' | 'destacado' | 'estado'>
+        )>, Asesor?: Maybe<(
+          { __typename?: 'User' }
+          & Pick<User, 'userId' | 'alias' | 'tipoUsuario' | 'nombres' | 'apellidos' | 'tipoDocumento' | 'nroDocumento' | 'fechaNacimiento' | 'email' | 'estado' | 'apiToken'>
+        )> }
+      )>, Cliente?: Maybe<(
+        { __typename?: 'Cliente' }
+        & Pick<Cliente, 'clienteId' | 'nombresCliente' | 'apellidosCliente' | 'celularCliente' | 'correoCliente'>
+      )> }
+    )>> }
   )> }
 );
 
@@ -2305,6 +2425,123 @@ export function useGetCategoriaSlugLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetCategoriaSlugQueryHookResult = ReturnType<typeof useGetCategoriaSlugQuery>;
 export type GetCategoriaSlugLazyQueryHookResult = ReturnType<typeof useGetCategoriaSlugLazyQuery>;
 export type GetCategoriaSlugQueryResult = Apollo.QueryResult<GetCategoriaSlugQuery, GetCategoriaSlugQueryVariables>;
+export const GetAllFormulariosDocument = gql`
+    query GetAllFormularios($numberPaginate: Int, $page: Int, $estado: String) {
+  GetAllFormularios(numberPaginate: $numberPaginate, page: $page, estado: $estado) {
+    NroItems
+    data {
+      formularioId
+      horarioContacto
+      descripcion
+      estado
+      clienteId
+      propiedadId
+      Propiedades {
+        propiedadId
+        titulo
+        slug
+        tipoContrato
+        descripcionCorta
+        descripcionCompleta
+        video
+        estado
+        destacado
+        fotoPrincipal {
+          id
+          descripcion
+          url
+        }
+        fotoSecundaria {
+          id
+          descripcion
+          url
+        }
+        galeria {
+          id
+          descripcion
+          url
+        }
+        lat
+        log
+        cuartos
+        banios
+        pisos
+        dimensiones
+        antiguedad
+        areaConstruida
+        ambientes
+        direccion
+        Departamento {
+          DeparCodi
+          DeparNom
+        }
+        Provincia {
+          ProvCodi
+          ProvNom
+          DeparCodi
+        }
+        Distrito {
+          DistCodi
+          DistNom
+          ProvCodi
+          destacado
+          estado
+        }
+        Asesor {
+          userId
+          alias
+          tipoUsuario
+          nombres
+          apellidos
+          tipoDocumento
+          nroDocumento
+          fechaNacimiento
+          email
+          estado
+          apiToken
+        }
+      }
+      Cliente {
+        clienteId
+        nombresCliente
+        apellidosCliente
+        celularCliente
+        correoCliente
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllFormulariosQuery__
+ *
+ * To run a query within a React component, call `useGetAllFormulariosQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllFormulariosQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllFormulariosQuery({
+ *   variables: {
+ *      numberPaginate: // value for 'numberPaginate'
+ *      page: // value for 'page'
+ *      estado: // value for 'estado'
+ *   },
+ * });
+ */
+export function useGetAllFormulariosQuery(baseOptions?: Apollo.QueryHookOptions<GetAllFormulariosQuery, GetAllFormulariosQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllFormulariosQuery, GetAllFormulariosQueryVariables>(GetAllFormulariosDocument, options);
+      }
+export function useGetAllFormulariosLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllFormulariosQuery, GetAllFormulariosQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllFormulariosQuery, GetAllFormulariosQueryVariables>(GetAllFormulariosDocument, options);
+        }
+export type GetAllFormulariosQueryHookResult = ReturnType<typeof useGetAllFormulariosQuery>;
+export type GetAllFormulariosLazyQueryHookResult = ReturnType<typeof useGetAllFormulariosLazyQuery>;
+export type GetAllFormulariosQueryResult = Apollo.QueryResult<GetAllFormulariosQuery, GetAllFormulariosQueryVariables>;
 export const GetImagenesDocument = gql`
     query GetImagenes {
   GetImagenes {

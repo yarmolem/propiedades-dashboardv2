@@ -28,7 +28,6 @@ const Routes = [
   },
   {
     path: '/clientes',
-    meta: { restrict: true },
     component: lazy(() => import('../../views/Clientes/index'))
   },
   {
