@@ -23,7 +23,15 @@ const MySwal = withReactContent(Swal)
 
 const Clientes = () => {
   const { open, onToggle } = useDisclosure()
-  const [activeMsg, setActiveMsg] = useState({})
+  const [activeMsg, setActiveMsg] = useState({
+    descripcion: '',
+    Cliente: {
+      correoCliente: '',
+      nombresCliente: '',
+      celularCliente: '',
+      apellidosCliente: ''
+    }
+  })
 
   const { data } = useGetAllFormulariosQuery({
     fetchPolicy: 'network-only',
