@@ -68,8 +68,8 @@ const NuevoAsesor = ({ history }) => {
   })
 
   const [createUser] = useCrearUsuarioMutation({
-    onError: (err) => {
-      console.log(err)
+    onError: ({ graphQLErrors }) => {
+      console.log(graphQLErrors)
       toast.success('Ha ocurrido un error')
     },
     onCompleted: () => {

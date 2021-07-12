@@ -93,12 +93,12 @@ const Table = ({ propiedades = [] }) => {
               </td>
               <td className="px-0">
                 <div className={styles['cell-titulo']}>
-                  <p className="text-truncate">{p.titulo}</p>
+                  <p className="text-truncate mb-0">{p.titulo}</p>
                 </div>
               </td>
               <td className="px-0">
                 <div className={styles['cell-titulo']}>
-                  <p className="text-truncate">{p.slug}</p>
+                  <p className="text-truncate mb-0">{p.slug}</p>
                 </div>
               </td>
               <td className="text-center px-0">{p.banios}</td>
@@ -110,7 +110,7 @@ const Table = ({ propiedades = [] }) => {
                 </Badge>
               </td>
               <td className={styles['cell-direccion']}>
-                <p className="text-truncate" id="direccion">
+                <p className="text-truncate mb-0" id="direccion">
                   {p.direccion}
                 </p>
                 <Tooltip
