@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 
 // ** Store & Actions
 import { useSelector } from 'react-redux'
@@ -22,7 +22,8 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  Table as TableBasic
+  Table as TableBasic,
+  Button
 } from 'reactstrap'
 import Swal from 'sweetalert2'
 import { CustomHeader } from './CustomHeader'
@@ -35,11 +36,12 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
 import { useHistory } from 'react-router-dom'
 import {
-  useGetAllUsersQuery,
   useDeleteUsuarioMutation,
   useUpdateUsuarioMutation,
-  GetAllUsersDocument as GET_ALL_USERS
+  GetAllUsersDocument as GET_ALL_USERS,
+  useGetBusquedaAsesoresQuery
 } from '../../generated/graphql'
+import useLocation from '../../utility/hooks/useLocation'
 
 import styles from './styles.module.css'
 
@@ -48,11 +50,25 @@ const MySwal = withReactContent(Swal)
 const UsersList = () => {
   const history = useHistory()
   const cache = useApolloClient()
+  const [variables, setVariables] = useState({
+    page: 1,
+    asesor: '',
+    distrito: '',
+    provincia: '',
+    departamento: '',
+    numberPaginate: 10,
+    orden: 'desc'
+  })
+  const [DepCode, setDepCode] = useState({ value: 0, label: 'Departamento' })
+  const [ProCode, setProCode] = useState({ value: 0, label: 'Provincia' })
+  const [DistCode, setDistCode] = useState({ value: 0, label: 'Distrito' })
+  const { depar, provincia, distrito } = useLocation({
+    DepCode: DepCode.value,
+    ProCode: ProCode.value
+  })
 
   // QUERY para lista de usuarios
-  const { data, refetch } = useGetAllUsersQuery({
-    variables: { estado: '', tipoUsuario: 2 }
-  })
+  const { data, refetch } = useGetBusquedaAsesoresQuery({ variables })
 
   // Mutation para actualizar
   const [updateUser] = useUpdateUsuarioMutation({
@@ -70,7 +86,32 @@ const UsersList = () => {
     }
   })
 
-  const users = data ? data.GetAllUsers : []
+  const users = data ? data.GetBusquedaAsesores.data : []
+
+  const handleFilter = () => {
+    const depar = parseInt(DepCode.value)
+    const prov = parseInt(ProCode.value)
+    const dist = parseInt(DistCode.value)
+
+    setVariables((v) => ({
+      ...v,
+      distrito: dist === 0 ? '' : dist,
+      provincia: prov === 0 ? '' : prov,
+      departamento: depar === 0 ? '' : depar
+    }))
+  }
+
+  const handleClear = () => {
+    setDepCode({ value: 0, label: 'Departamento' })
+    setProCode({ value: 0, label: 'Provincia' })
+    setDistCode({ value: 0, label: 'Distrito' })
+    setVariables((v) => ({
+      ...v,
+      distrito: '',
+      provincia: '',
+      departamento: ''
+    }))
+  }
 
   const handleChangeEstado = async (newUser, checked) => {
     cache.writeQuery({
@@ -98,7 +139,6 @@ const UsersList = () => {
       DeparCodi: parseInt(Departamento.DeparCodi)
     }
 
-    console.log(payload)
     await updateUser({ variables: { input: payload } })
   }
 
@@ -153,10 +193,39 @@ const UsersList = () => {
             confirmButton: 'btn btn-success'
           }
         })
-        refetch({ estado: '', tipoUsuario: 2 })
+        refetch({
+          page: 1,
+          asesor: '',
+          distrito: '',
+          provincia: '',
+          departamento: '',
+          numberPaginate: 10,
+          orden: 'desc'
+        })
       }
     })
   }
+
+  const departamentos = useMemo(() => {
+    return depar.data.map((dep) => ({
+      value: dep.DeparCodi,
+      label: dep.DeparNom
+    }))
+  }, [depar])
+
+  const provincias = useMemo(() => {
+    return provincia.data.map((prov) => ({
+      value: prov.ProvCodi,
+      label: prov.ProvNom
+    }))
+  }, [DepCode, provincia])
+
+  const distritos = useMemo(() => {
+    return distrito.data.map((dist) => ({
+      value: dist.DistCodi,
+      label: dist.DistNom
+    }))
+  }, [DepCode, ProCode, distrito])
 
   return (
     <Fragment>
@@ -164,42 +233,49 @@ const UsersList = () => {
         <CardHeader>
           <CardTitle tag="h4">Filtro</CardTitle>
         </CardHeader>
-        <CardBody>
-          <Row>
-            <Col md="4">
-              <Select
-                isClearable={false}
-                theme={selectThemeColors}
-                className="react-select"
-                classNamePrefix="select"
-                // options={roleOptions}
-                // value={currentRole}
-                onChange={(data) => console.log(data)}
-              />
-            </Col>
-            <Col className="my-md-0 my-1" md="4">
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                // options={planOptions}
-                // value={currentPlan}
-                onChange={(data) => console.log(data)}
-              />
-            </Col>
-            <Col md="4">
-              <Select
-                theme={selectThemeColors}
-                isClearable={false}
-                className="react-select"
-                classNamePrefix="select"
-                // options={statusOptions}
-                // value={currentStatus}
-                onChange={(data) => console.log(data)}
-              />
-            </Col>
-          </Row>
+        <CardBody className={styles.filter}>
+          <Select
+            isClearable={false}
+            theme={selectThemeColors}
+            className="react-select"
+            classNamePrefix="select"
+            options={departamentos}
+            value={DepCode}
+            onChange={(data) => {
+              setDepCode(data)
+              setProCode({ value: 0, label: '' })
+              setDistCode({ value: 0, label: '' })
+            }}
+          />
+          <Select
+            theme={selectThemeColors}
+            isClearable={false}
+            className="react-select"
+            classNamePrefix="select"
+            options={provincias}
+            value={ProCode}
+            onChange={(data) => {
+              setProCode(data)
+              setDistCode({ value: 0, label: '' })
+            }}
+          />
+          <Select
+            theme={selectThemeColors}
+            isClearable={false}
+            className="react-select"
+            classNamePrefix="select"
+            options={distritos}
+            value={DistCode}
+            onChange={setDistCode}
+          />
+          <div className={styles.btns}>
+            <Button onClick={handleClear} color="primary" outline>
+              Limpiar
+            </Button>
+            <Button onClick={handleFilter} color="primary">
+              Filtrar
+            </Button>
+          </div>
         </CardBody>
       </Card>
 

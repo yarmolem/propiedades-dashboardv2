@@ -55,3 +55,14 @@
   cursor: pointer;
   transform: scale(1.05);
 }
+
+.filter {
+  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.btns {
+  display: flex;
+  justify-content: space-between;
+}
