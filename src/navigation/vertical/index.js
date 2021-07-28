@@ -24,6 +24,13 @@ export default [
     navLink: '/clientes'
   },
   {
+    id: 'postulaciones',
+    title: 'Postulaciones',
+    meta: { restrict: true },
+    icon: <Users size={20} />,
+    navLink: '/postulaciones'
+  },
+  {
     id: 'asesores',
     title: 'Asesores',
     meta: { restrict: true },

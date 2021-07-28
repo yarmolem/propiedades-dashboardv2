@@ -89,8 +89,8 @@ const UsersList = () => {
   const users = data ? data.GetBusquedaAsesores.data : []
 
   const handleFilter = () => {
-    const depar = parseInt(DepCode.value)
     const prov = parseInt(ProCode.value)
+    const depar = parseInt(DepCode.value)
     const dist = parseInt(DistCode.value)
 
     setVariables((v) => ({

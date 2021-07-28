@@ -1,74 +1,64 @@
 import { useState } from 'react'
-import { MoreVertical, File, Trash } from 'react-feather'
 import {
-  Table,
-  UncontrolledDropdown,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
   Card,
-  CardBody
+  CardBody,
+  Table,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledDropdown
 } from 'reactstrap'
+import Modal from './Modal'
+import { MoreVertical, Edit, Trash, File } from 'react-feather'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+
+import {
+  useDeletePostulanteMutation,
+  useGetAllPostulantesQuery
+} from '../../generated/graphql'
 import useDisclosure from '../../utility/hooks/useDisclosure'
-import Modal from './Modal'
 
 // ** Styles
 import 'animate.css/animate.css'
+import '@styles/react/libs/react-select/_react-select.scss'
+import '@styles/react/libs/tables/react-dataTable-component.scss'
 import '@styles/base/plugins/extensions/ext-component-sweet-alerts.scss'
-import {
-  useGetAllFormulariosQuery,
-  useDeleteFormularioMutation,
-  GetAllFormulariosDocument as GET_ALL_FORMS
-} from '../../generated/graphql'
+
+const postulantes = {
+  GetAllPostulantes: {
+    data: [],
+    NroItems: 0
+  }
+}
+
+export const postulante = {
+  apellidos: '',
+  celular: '',
+  ciudad: '',
+  descripcion: '',
+  direccion: '',
+  email: '',
+  estado: 1,
+  nombre: ''
+}
 
 const MySwal = withReactContent(Swal)
 
-const Clientes = () => {
-  const [id, setId] = useState(null)
+const Postulaciones = () => {
   const { open, onToggle } = useDisclosure()
-  const [activeMsg, setActiveMsg] = useState({
-    descripcion: '',
-    Cliente: {
-      correoCliente: '',
-      nombresCliente: '',
-      celularCliente: '',
-      apellidosCliente: ''
-    }
+  const [active, setActive] = useState(postulante)
+
+  const [deletePostulacion] = useDeletePostulanteMutation({
+    onError: ({ graphQLErrors }) => console.log(graphQLErrors[0])
+  })
+  const { data = postulantes, refetch } = useGetAllPostulantesQuery({
+    variables: { estado: '1', page: 1, numberPaginate: 10 }
   })
 
-  const { data } = useGetAllFormulariosQuery({
-    fetchPolicy: 'network-only',
-    variables: { numberPaginate: 10, estado: '1', page: 1 }
-  })
+  console.log(data)
 
-  const [deleteForm, { client }] = useDeleteFormularioMutation({
-    onError: ({ graphQLErrors }) => {
-      const err = graphQLErrors[0].debugMessage
-      if (err === 'ELIMINADO') {
-        client.cache.writeQuery({
-          query: GET_ALL_FORMS,
-          variables: { numberPaginate: 10, estado: '1', page: 1 },
-          data: {
-            GetAllFormularios: {
-              NroItems: data.GetAllFormularios.NroItems - 1,
-              data: data.GetAllFormularios.data.filter((f) => {
-                return f.formularioId !== id
-              })
-            }
-          }
-        })
-
-        setId(null)
-      }
-    }
-  })
-
-  const forms = data ? data.GetAllFormularios.data : []
-
-  // ** Handle Alert
-  const HandleDelete = (id) => {
+  const HandleDelete = async (email) => {
     return MySwal.fire({
       title: '¿Estas seguro?',
       text: 'No podras recuperar esta información!',
@@ -83,16 +73,24 @@ const Clientes = () => {
       buttonsStyling: false
     }).then(async (result) => {
       if (result.value) {
-        setId(id)
-        await deleteForm({
-          variables: { input: { formularioId: id } }
+        await deletePostulacion({
+          variables: {
+            input1: { email }
+          }
         })
         MySwal.fire({
           icon: 'success',
           title: 'Eliminado!',
-          text: 'Mensaje eliminado.',
+          text: 'El Asesor ha sido eliminado.',
           customClass: {
             confirmButton: 'btn btn-success'
+          }
+        })
+        refetch({
+          variables: {
+            page: 1,
+            estado: '1',
+            numberPaginate: 10
           }
         })
       }
@@ -101,10 +99,10 @@ const Clientes = () => {
 
   return (
     <>
-      <Modal {...{ open, onToggle, activeMsg }} />
+      <Modal {...{ open, onToggle, active }} />
       <Card>
         <CardBody>
-          <h1>Clientes</h1>
+          <h1>Postulaciones</h1>
         </CardBody>
         <Table responsive>
           <thead>
@@ -112,17 +110,19 @@ const Clientes = () => {
               <th>Nombre</th>
               <th>Telefono</th>
               <th>Correo</th>
+              <th>Ciudad</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {forms.map((form, i) => (
+            {data.GetAllPostulantes.data.map((form, i) => (
               <tr key={i}>
                 <td>
-                  {form.Cliente.nombresCliente} {form.Cliente.apellidosCliente}
+                  {form.nombre} {form.apellidos}
                 </td>
-                <td>{form.Cliente.celularCliente}</td>
-                <td>{form.Cliente.correoCliente}</td>
+                <td>{form.celular}</td>
+                <td>{form.email}</td>
+                <td>{form.ciudad}</td>
                 <td>
                   <UncontrolledDropdown>
                     <DropdownToggle
@@ -137,7 +137,7 @@ const Clientes = () => {
                       <DropdownItem
                         onClick={(e) => {
                           e.preventDefault()
-                          HandleDelete(form.formularioId)
+                          HandleDelete(form.email)
                         }}
                       >
                         <Trash className="mr-50" size={15} />{' '}
@@ -147,7 +147,7 @@ const Clientes = () => {
                         onClick={(e) => {
                           e.preventDefault()
                           onToggle()
-                          setActiveMsg(form)
+                          setActive(form)
                         }}
                       >
                         <File className="mr-50" size={15} />{' '}
@@ -165,4 +165,4 @@ const Clientes = () => {
   )
 }
 
-export default Clientes
+export default Postulaciones

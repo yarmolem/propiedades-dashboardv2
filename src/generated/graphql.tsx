@@ -22,6 +22,26 @@ export type Scalars = {
   Upload: any;
 };
 
+export type BusquedaAvanzadaInput = {
+  tipoContrato?: Maybe<Scalars['Int']>;
+  slugCategoria?: Maybe<Scalars['String']>;
+  DeparCodi?: Maybe<Scalars['Int']>;
+  ProvCodi?: Maybe<Scalars['Int']>;
+  DistCodi?: Maybe<Scalars['Int']>;
+  montoMinimo?: Maybe<Scalars['Float']>;
+  montoMaximo?: Maybe<Scalars['Float']>;
+  areaMinima?: Maybe<Scalars['String']>;
+  areaMaxima?: Maybe<Scalars['String']>;
+  antiguedad?: Maybe<Scalars['Int']>;
+  cuartos?: Maybe<Scalars['Int']>;
+  banios?: Maybe<Scalars['Int']>;
+  destacado?: Maybe<Scalars['Int']>;
+  ordenPrecio?: Maybe<Scalars['String']>;
+  ordenCreacion?: Maybe<Scalars['String']>;
+  numberPaginate?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+};
+
 export type CambiarContrasenaInput = {
   userId?: Maybe<Scalars['ID']>;
   passwordNuevo?: Maybe<Scalars['String']>;
@@ -81,11 +101,17 @@ export type Distrito = {
   ProvCodi?: Maybe<Scalars['Int']>;
   destacado?: Maybe<Scalars['Int']>;
   estado?: Maybe<Scalars['Int']>;
+  estadoDistrito?: Maybe<Scalars['Int']>;
+  imagenPrincipal?: Maybe<Imagenes>;
+  imagenSecundaria?: Maybe<Imagenes>;
 };
 
 export type DistritoInput = {
   DistCodi?: Maybe<Scalars['ID']>;
   destacado?: Maybe<Scalars['Int']>;
+  estadoDistrito?: Maybe<Scalars['Int']>;
+  imagenPrincipal?: Maybe<Scalars['Int']>;
+  imagenSecundaria?: Maybe<Scalars['Int']>;
 };
 
 export type Formulario = {
@@ -98,6 +124,25 @@ export type Formulario = {
   propiedadId?: Maybe<Scalars['Int']>;
   Propiedades?: Maybe<Propiedades>;
   Cliente?: Maybe<Cliente>;
+};
+
+export type FormularioContacto = {
+  __typename?: 'FormularioContacto';
+  formContactoId?: Maybe<Scalars['Int']>;
+  nombre?: Maybe<Scalars['String']>;
+  correo?: Maybe<Scalars['String']>;
+  asunto?: Maybe<Scalars['String']>;
+  descripcion?: Maybe<Scalars['String']>;
+  estado?: Maybe<Scalars['Int']>;
+};
+
+export type FormularioContactoInput = {
+  formContactoId?: Maybe<Scalars['Int']>;
+  nombre?: Maybe<Scalars['String']>;
+  correo?: Maybe<Scalars['String']>;
+  asunto?: Maybe<Scalars['String']>;
+  descripcion?: Maybe<Scalars['String']>;
+  estado?: Maybe<Scalars['Int']>;
 };
 
 export type FormularioInput = {
@@ -115,6 +160,18 @@ export type GetAsesorses = {
   data?: Maybe<Array<User>>;
 };
 
+export type GetDistrito = {
+  __typename?: 'GetDistrito';
+  NroItems?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Distrito>>;
+};
+
+export type GetFormularioContacto = {
+  __typename?: 'GetFormularioContacto';
+  NroItems?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<FormularioContacto>>;
+};
+
 export type GetFormularios = {
   __typename?: 'GetFormularios';
   NroItems?: Maybe<Scalars['Int']>;
@@ -125,6 +182,12 @@ export type GetPlanos = {
   __typename?: 'GetPlanos';
   NroItems?: Maybe<Scalars['Int']>;
   data?: Maybe<Array<Planos>>;
+};
+
+export type GetPostulantes = {
+  __typename?: 'GetPostulantes';
+  NroItems?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Postulantes>>;
 };
 
 export type GetPropiedades = {
@@ -148,6 +211,12 @@ export type ImagenesInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  CrearPostulante?: Maybe<Postulantes>;
+  UpdatePostulante?: Maybe<Postulantes>;
+  DeletePostulante?: Maybe<Scalars['String']>;
+  CrearFormularioContacto?: Maybe<FormularioContacto>;
+  UpdateFormularioContacto?: Maybe<FormularioContacto>;
+  DeleteFormularioContacto?: Maybe<Scalars['String']>;
   CrearFormulario?: Maybe<Formulario>;
   UpdateFormulario?: Maybe<Formulario>;
   DeleteFormulario?: Maybe<Scalars['String']>;
@@ -170,6 +239,36 @@ export type Mutation = {
   DeleteImage?: Maybe<Scalars['String']>;
   UpdateImage?: Maybe<Imagenes>;
   CreateImage?: Maybe<Imagenes>;
+};
+
+
+export type MutationCrearPostulanteArgs = {
+  input1: PostulantesInput;
+};
+
+
+export type MutationUpdatePostulanteArgs = {
+  input1?: Maybe<PostulantesInput>;
+};
+
+
+export type MutationDeletePostulanteArgs = {
+  input1: PostulantesInput;
+};
+
+
+export type MutationCrearFormularioContactoArgs = {
+  input1: FormularioContactoInput;
+};
+
+
+export type MutationUpdateFormularioContactoArgs = {
+  input1?: Maybe<FormularioContactoInput>;
+};
+
+
+export type MutationDeleteFormularioContactoArgs = {
+  input1: FormularioContactoInput;
 };
 
 
@@ -354,6 +453,31 @@ export type PlanosInput = {
   propiedadId?: Maybe<Scalars['Int']>;
 };
 
+export type Postulantes = {
+  __typename?: 'Postulantes';
+  postulanteId?: Maybe<Scalars['Int']>;
+  nombre?: Maybe<Scalars['String']>;
+  apellidos?: Maybe<Scalars['String']>;
+  direccion?: Maybe<Scalars['String']>;
+  ciudad?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  celular?: Maybe<Scalars['String']>;
+  descripcion?: Maybe<Scalars['String']>;
+  estado?: Maybe<Scalars['Int']>;
+};
+
+export type PostulantesInput = {
+  postulanteId?: Maybe<Scalars['Int']>;
+  nombre?: Maybe<Scalars['String']>;
+  apellidos?: Maybe<Scalars['String']>;
+  direccion?: Maybe<Scalars['String']>;
+  ciudad?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  celular?: Maybe<Scalars['String']>;
+  descripcion?: Maybe<Scalars['String']>;
+  estado?: Maybe<Scalars['Int']>;
+};
+
 export type Propiedades = {
   __typename?: 'Propiedades';
   propiedadId?: Maybe<Scalars['Int']>;
@@ -440,9 +564,22 @@ export type Query = {
   GetAllPropiedades?: Maybe<GetPropiedades>;
   GetAsesorPropiedades?: Maybe<GetPropiedades>;
   GetSlugPropiedades?: Maybe<Propiedades>;
+  GetBusquedaAvanzada?: Maybe<GetPropiedades>;
   GetAliasAsesorPropiedades?: Maybe<GetPropiedades>;
+  GetMontoMinimo?: Maybe<Scalars['Float']>;
+  GetMontoMaximo?: Maybe<Scalars['Float']>;
+  GetAreaMinimo?: Maybe<Scalars['String']>;
+  GetAreaMaximo?: Maybe<Scalars['String']>;
+  GetAntiguedad?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  GetCuartos?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  GetBanios?: Maybe<Array<Maybe<Scalars['Int']>>>;
   GetAllFormularios?: Maybe<GetFormularios>;
   GetBusquedaAsesores?: Maybe<GetAsesorses>;
+  GetAllFormularioContacto?: Maybe<GetFormularioContacto>;
+  GetIdFormularioContacto?: Maybe<FormularioContacto>;
+  GetAllPostulantes?: Maybe<GetPostulantes>;
+  GetIdPostulantes?: Maybe<Postulantes>;
+  GetAllDistritos?: Maybe<GetDistrito>;
 };
 
 
@@ -491,6 +628,11 @@ export type QueryGetSlugPropiedadesArgs = {
 };
 
 
+export type QueryGetBusquedaAvanzadaArgs = {
+  input?: Maybe<BusquedaAvanzadaInput>;
+};
+
+
 export type QueryGetAliasAsesorPropiedadesArgs = {
   numberPaginate?: Maybe<Scalars['Int']>;
   page?: Maybe<Scalars['Int']>;
@@ -515,6 +657,37 @@ export type QueryGetBusquedaAsesoresArgs = {
   distrito?: Maybe<Scalars['String']>;
   asesor?: Maybe<Scalars['String']>;
   orden?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetAllFormularioContactoArgs = {
+  numberPaginate?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  estado?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetIdFormularioContactoArgs = {
+  correo?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetAllPostulantesArgs = {
+  numberPaginate?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  estado?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetIdPostulantesArgs = {
+  email?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryGetAllDistritosArgs = {
+  numberPaginate?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  destacado?: Maybe<Scalars['String']>;
 };
 
 /** The available directions for ordering a list of records. */
@@ -686,6 +859,16 @@ export type UpdateCategoriasMutation = (
   )> }
 );
 
+export type DeleteFormularioMutationVariables = Exact<{
+  input: FormularioInput;
+}>;
+
+
+export type DeleteFormularioMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'DeleteFormulario'>
+);
+
 export type CreateImageMutationVariables = Exact<{
   input?: Maybe<ImagenesInput>;
   imagen: Scalars['Upload'];
@@ -794,6 +977,16 @@ export type UpdatePlanosMutation = (
       & Pick<Propiedades, 'propiedadId' | 'titulo' | 'slug' | 'tipoContrato' | 'descripcionCorta' | 'descripcionCompleta' | 'video' | 'estado' | 'destacado' | 'lat' | 'log' | 'cuartos' | 'banios' | 'pisos' | 'dimensiones' | 'antiguedad' | 'areaConstruida' | 'ambientes' | 'direccion'>
     )> }
   )> }
+);
+
+export type DeletePostulanteMutationVariables = Exact<{
+  input1: PostulantesInput;
+}>;
+
+
+export type DeletePostulanteMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'DeletePostulante'>
 );
 
 export type CrearPropiedadesMutationVariables = Exact<{
@@ -1116,6 +1309,25 @@ export type GetProvinciasQuery = (
     { __typename?: 'Provincia' }
     & Pick<Provincia, 'ProvCodi' | 'ProvNom' | 'DeparCodi'>
   )>> }
+);
+
+export type GetAllPostulantesQueryVariables = Exact<{
+  numberPaginate?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  estado?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetAllPostulantesQuery = (
+  { __typename?: 'Query' }
+  & { GetAllPostulantes?: Maybe<(
+    { __typename?: 'GetPostulantes' }
+    & Pick<GetPostulantes, 'NroItems'>
+    & { data?: Maybe<Array<(
+      { __typename?: 'Postulantes' }
+      & Pick<Postulantes, 'postulanteId' | 'nombre' | 'apellidos' | 'direccion' | 'ciudad' | 'email' | 'celular' | 'descripcion' | 'estado'>
+    )>> }
+  )> }
 );
 
 export type GetAllPropiedadesQueryVariables = Exact<{
@@ -1622,6 +1834,37 @@ export function useUpdateCategoriasMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateCategoriasMutationHookResult = ReturnType<typeof useUpdateCategoriasMutation>;
 export type UpdateCategoriasMutationResult = Apollo.MutationResult<UpdateCategoriasMutation>;
 export type UpdateCategoriasMutationOptions = Apollo.BaseMutationOptions<UpdateCategoriasMutation, UpdateCategoriasMutationVariables>;
+export const DeleteFormularioDocument = gql`
+    mutation DeleteFormulario($input: FormularioInput!) {
+  DeleteFormulario(input: $input)
+}
+    `;
+export type DeleteFormularioMutationFn = Apollo.MutationFunction<DeleteFormularioMutation, DeleteFormularioMutationVariables>;
+
+/**
+ * __useDeleteFormularioMutation__
+ *
+ * To run a mutation, you first call `useDeleteFormularioMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteFormularioMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteFormularioMutation, { data, loading, error }] = useDeleteFormularioMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteFormularioMutation(baseOptions?: Apollo.MutationHookOptions<DeleteFormularioMutation, DeleteFormularioMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteFormularioMutation, DeleteFormularioMutationVariables>(DeleteFormularioDocument, options);
+      }
+export type DeleteFormularioMutationHookResult = ReturnType<typeof useDeleteFormularioMutation>;
+export type DeleteFormularioMutationResult = Apollo.MutationResult<DeleteFormularioMutation>;
+export type DeleteFormularioMutationOptions = Apollo.BaseMutationOptions<DeleteFormularioMutation, DeleteFormularioMutationVariables>;
 export const CreateImageDocument = gql`
     mutation CreateImage($input: ImagenesInput, $imagen: Upload!) {
   CreateImage(input: $input, imagen: $imagen) {
@@ -1938,6 +2181,37 @@ export function useUpdatePlanosMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdatePlanosMutationHookResult = ReturnType<typeof useUpdatePlanosMutation>;
 export type UpdatePlanosMutationResult = Apollo.MutationResult<UpdatePlanosMutation>;
 export type UpdatePlanosMutationOptions = Apollo.BaseMutationOptions<UpdatePlanosMutation, UpdatePlanosMutationVariables>;
+export const DeletePostulanteDocument = gql`
+    mutation DeletePostulante($input1: PostulantesInput!) {
+  DeletePostulante(input1: $input1)
+}
+    `;
+export type DeletePostulanteMutationFn = Apollo.MutationFunction<DeletePostulanteMutation, DeletePostulanteMutationVariables>;
+
+/**
+ * __useDeletePostulanteMutation__
+ *
+ * To run a mutation, you first call `useDeletePostulanteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePostulanteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePostulanteMutation, { data, loading, error }] = useDeletePostulanteMutation({
+ *   variables: {
+ *      input1: // value for 'input1'
+ *   },
+ * });
+ */
+export function useDeletePostulanteMutation(baseOptions?: Apollo.MutationHookOptions<DeletePostulanteMutation, DeletePostulanteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePostulanteMutation, DeletePostulanteMutationVariables>(DeletePostulanteDocument, options);
+      }
+export type DeletePostulanteMutationHookResult = ReturnType<typeof useDeletePostulanteMutation>;
+export type DeletePostulanteMutationResult = Apollo.MutationResult<DeletePostulanteMutation>;
+export type DeletePostulanteMutationOptions = Apollo.BaseMutationOptions<DeletePostulanteMutation, DeletePostulanteMutationVariables>;
 export const CrearPropiedadesDocument = gql`
     mutation CrearPropiedades($input: PropiedadesInput!) {
   CrearPropiedades(input: $input) {
@@ -2756,6 +3030,54 @@ export function useGetProvinciasLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetProvinciasQueryHookResult = ReturnType<typeof useGetProvinciasQuery>;
 export type GetProvinciasLazyQueryHookResult = ReturnType<typeof useGetProvinciasLazyQuery>;
 export type GetProvinciasQueryResult = Apollo.QueryResult<GetProvinciasQuery, GetProvinciasQueryVariables>;
+export const GetAllPostulantesDocument = gql`
+    query GetAllPostulantes($numberPaginate: Int, $page: Int, $estado: String) {
+  GetAllPostulantes(numberPaginate: $numberPaginate, page: $page, estado: $estado) {
+    NroItems
+    data {
+      postulanteId
+      nombre
+      apellidos
+      direccion
+      ciudad
+      email
+      celular
+      descripcion
+      estado
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllPostulantesQuery__
+ *
+ * To run a query within a React component, call `useGetAllPostulantesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPostulantesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllPostulantesQuery({
+ *   variables: {
+ *      numberPaginate: // value for 'numberPaginate'
+ *      page: // value for 'page'
+ *      estado: // value for 'estado'
+ *   },
+ * });
+ */
+export function useGetAllPostulantesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllPostulantesQuery, GetAllPostulantesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllPostulantesQuery, GetAllPostulantesQueryVariables>(GetAllPostulantesDocument, options);
+      }
+export function useGetAllPostulantesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPostulantesQuery, GetAllPostulantesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllPostulantesQuery, GetAllPostulantesQueryVariables>(GetAllPostulantesDocument, options);
+        }
+export type GetAllPostulantesQueryHookResult = ReturnType<typeof useGetAllPostulantesQuery>;
+export type GetAllPostulantesLazyQueryHookResult = ReturnType<typeof useGetAllPostulantesLazyQuery>;
+export type GetAllPostulantesQueryResult = Apollo.QueryResult<GetAllPostulantesQuery, GetAllPostulantesQueryVariables>;
 export const GetAllPropiedadesDocument = gql`
     query GetAllPropiedades($page: Int, $estado: String, $destacado: String, $numberPaginate: Int) {
   GetAllPropiedades(

@@ -36,6 +36,11 @@ const Routes = [
     component: lazy(() => import('../../views/Asesores'))
   },
   {
+    path: '/postulaciones',
+    meta: { restrict: true },
+    component: lazy(() => import('../../views/Postulaciones'))
+  },
+  {
     path: '/nuevo-asesor',
     meta: { restrict: true },
     component: lazy(() => import('../../views/NuevoAsesor'))
