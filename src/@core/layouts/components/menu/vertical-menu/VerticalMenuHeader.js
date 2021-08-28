@@ -43,12 +43,12 @@ const VerticalMenuHeader = props => {
   return (
     <div className='navbar-header'>
       <ul className='nav navbar-nav flex-row'>
-        <li className='nav-item mr-auto'>
-          <NavLink to='/' className='navbar-brand'>
-            <span className='brand-logo'>
-              <img src={themeConfig.app.appLogoImage} alt='logo' />
+        <li className='nav-item mx-auto mt-1 mb-1'>
+          <NavLink to='/' >
+            <span >
+              <img width={120} src={themeConfig.app.appLogoImage} alt='logo' />
             </span>
-            <h2 className='brand-text mb-0'>{themeConfig.app.appName}</h2>
+            {/* <h2 className='brand-text mb-0'>{themeConfig.app.appName}</h2> */}
           </NavLink>
         </li>
         <li className='nav-item nav-toggle'>
