@@ -17,6 +17,7 @@ import { Home, Image, FilePlus } from 'react-feather'
 import '@styles/base/pages/app-ecommerce.scss'
 import {
   GetAllPropiedadesDocument as GET_ALL_PROPI,
+  useGetSlugPropiedadesLazyQuery,
   useUpdatePropiedadesMutation
 } from '../../generated/graphql'
 
@@ -68,10 +69,14 @@ const initialValues = {
 }
 
 const EditarPropiedad = ({ location }) => {
+  const { slug } = useParams()
   // ** Ref & State
   const ref = useRef(null)
   const [stepper, setStepper] = useState(null)
-  const [state, setState] = useState(location.state)
+  const [state, setState] = useState(() => {
+    if (!location.state) return initialValues
+    return location.state
+  })
   const [propiedadId, setPropiedadId] = useState(null)
 
   const [updatePropi] = useUpdatePropiedadesMutation({
@@ -82,6 +87,20 @@ const EditarPropiedad = ({ location }) => {
       }
     }
   })
+
+  const [GetBySlug] = useGetSlugPropiedadesLazyQuery({
+    onCompleted: ({ GetSlugPropiedades }) => {
+      setState(GetSlugPropiedades)
+      console.log(GetSlugPropiedades)
+    }
+  })
+
+  useEffect(() => {
+    console.log(location.state)
+    if (!location.state) {
+      GetBySlug({ variables: { slug } })
+    }
+  }, [])
 
   const handleUpdatePropi = async (propiedad) => {
     await updatePropi({

@@ -70,6 +70,7 @@ const Categorys = () => {
 
   const isEditing = Object.keys(activeCat).length === 0
   const categorias = data ? data.GetAllCategorias : []
+  console.log(categorias)
 
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)

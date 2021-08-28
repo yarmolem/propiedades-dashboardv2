@@ -61,7 +61,7 @@ const Routes = [
     component: lazy(() => import('../../views/NuevaPropiedad'))
   },
   {
-    path: '/editar-propiedad/:id',
+    path: '/editar-propiedad/:slug',
     meta: { restrict: true },
     component: lazy(() => import('../../views/EditarPropiedad'))
   },

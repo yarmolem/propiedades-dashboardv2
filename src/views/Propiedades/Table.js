@@ -452,7 +452,7 @@ const ListaPropiedades = () => {
                         onClick={(e) => {
                           e.preventDefault()
                           history.push(
-                            `/editar-propiedad/${p.propiedadId}`,
+                            `/editar-propiedad/${p.slug}`,
                             propiEditMap(p)
                           )
                         }}

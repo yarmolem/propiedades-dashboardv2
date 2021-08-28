@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   Form,
   Card,
@@ -117,7 +117,7 @@ const EditarAsesor = ({ history, location }) => {
           <CardTitle tag="h4" className="mb-2">
             Editar asesor
           </CardTitle>
-          <Formik initialValues={initialvalues} onSubmit={onSubmit}>
+          <Formik enableReinitialize initialValues={initialvalues} onSubmit={onSubmit}>
             {({
               values,
               handleBlur,

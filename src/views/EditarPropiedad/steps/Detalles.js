@@ -124,6 +124,7 @@ const EditarDetalles = ({ stepper, state, setState }) => {
       </CardTitle>
       <CardBody>
         <Formik
+          enableReinitialize
           initialValues={state}
           onSubmit={(values) => setState({ ...values })}
         >

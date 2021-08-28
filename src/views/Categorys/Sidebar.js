@@ -12,6 +12,7 @@ import {
 } from '../../generated/graphql'
 
 const initialValues = {
+  categoriaId: 0,
   nombreCategoria: '',
   ImagenPrincipal: 0,
   ImagenSecundaria: 0,
@@ -36,7 +37,7 @@ const categorySchema = Yup.object().shape({
   ImagenSecundaria: Yup.number().min(1, 'No has seleccionado una imagen.')
 })
 
-const Sidebar = ({ activeCat, setActiveCat, ...props }) => {
+const Sidebar = ({ activeCat = initialValues, setActiveCat, ...props }) => {
   const [updateCategory, update] = useUpdateCategoriasMutation({
     onError: () => {}
   })
@@ -94,8 +95,8 @@ const Sidebar = ({ activeCat, setActiveCat, ...props }) => {
     ? {
         categoriaId: activeCat.categoriaId,
         nombreCategoria: activeCat.nombreCategoria,
-        ImagenPrincipal: activeCat.ImagenPrincipal.id,
-        ImagenSecundaria: activeCat.ImagenSecundaria.id,
+        ImagenPrincipal: activeCat?.ImagenPrincipal?.id ?? 0 ,
+        ImagenSecundaria: activeCat?.ImagenSecundaria?.id ?? 0,
         KeywordsCategoria: activeCat.KeywordsCategoria,
         descripcionCategoria: activeCat.descripcionCategoria
       }
